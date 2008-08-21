@@ -14,8 +14,7 @@ class Runner {
 	static var instance:Runner;
 
 	public function new() {
-		suites = new Array();
-
+		suites = [];
 		resultHandler = new ResultHandler();
 	}
 

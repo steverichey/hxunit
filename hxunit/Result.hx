@@ -15,7 +15,7 @@ class Result {
 	public var errors(default, null):Array<TestError>;
 
 	public function new() {
-		errors = new Array();
+		errors = [];
 	}
 
 	public function addError(value:TestError) {
