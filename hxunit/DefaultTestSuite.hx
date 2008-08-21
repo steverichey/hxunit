@@ -1,9 +1,4 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
+﻿package hxunit;
 
 class DefaultTestSuite extends TestSuite {
 

@@ -1,9 +1,4 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package test;
+﻿package test;
 
 import hxunit.TestCase;
 import haxe.Log;
@@ -28,7 +23,7 @@ class UnitTestTest extends TestCase{
 		assertTrue(true);
 		async();
 	}
-	
+
 	public function handler(value):Void {
 		//Log.trace("handler called");
 	}
@@ -36,18 +31,18 @@ class UnitTestTest extends TestCase{
 		//Log.trace("testAsyncFailTimeout");
 		async = asyncResponder(handler, 1000);
 	}
-	
+
 	public function test6AsyncFailInHandlerCalledInMethod() {
 		//Log.trace("testAsyncFailInHandler");
 		async = asyncResponder(handler2, 1000);
 		async();
 	}
-	
+
 	function handler2(value):Void {
 		////Log.trace("handler2 called");
 		assertTrue(false);
 	}
-	
+
 	public function test7ErrorAsyncCalledInHandlerCalledinMethod() {
 		////Log.trace("testAsyncErrorInHandler");
 		async = asyncResponder(handler3, 10000);
@@ -63,9 +58,9 @@ class UnitTestTest extends TestCase{
 	function handler4(value):Void {
 		fail("Explicit Fail in handler");
 	}
-	
+
 	function handler5(value):Void {
-		
+
 	}
 	public function test9FailedTimed() {
 		async = asyncResponder(handler5, 10000);
@@ -82,11 +77,11 @@ class UnitTestTest extends TestCase{
 		Timer.delay(async, 5000);
 		#end
 	}
-	
+
 	function handler6(value):Void {
 		fail("Explicit Fail in Handler");
 	}
-	
+
 	public function test11FailTimeoutThenAsync() {
 		#if (neko||php)
 		#else
@@ -105,7 +100,7 @@ class UnitTestTest extends TestCase{
 		async = asyncResponder(handler8, 10000, 2);
 		async();
 	}
-	
+
 	function handler8(value) {
 		fail("failed");
 		assertEquals(blah,value);

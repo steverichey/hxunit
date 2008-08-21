@@ -1,13 +1,6 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
-
+﻿package hxunit;
 
 class TestWrapper {
-
 	public var scope:Dynamic;
 	public var test:Dynamic;
 	public var name(getName,null):String;
@@ -23,7 +16,7 @@ class TestWrapper {
 		this.setup = setup;
 		this.teardown  = teardown;
 	}
-	
+
 	public var setup:Void -> Void;
 	public var teardown:Void -> Void;
 }

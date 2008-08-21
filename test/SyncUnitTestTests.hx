@@ -1,9 +1,5 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
+﻿package test;
 
-package test;
 import hxunit.TestCase;
 
 class SyncUnitTestTests extends TestCase {
@@ -11,7 +7,7 @@ class SyncUnitTestTests extends TestCase {
 	public function new() {
 		super();
 	}
-	
+
 	public function test0SuccessSync() {
 		//Log.trace("testSyncSuccess");
 		assertTrue(true);
@@ -28,5 +24,5 @@ class SyncUnitTestTests extends TestCase {
 	public function test3WarnNoAssert() {
 		//Log.trace("testNoAssert");
 	}
-	
+
 }

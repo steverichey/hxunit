@@ -1,9 +1,4 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
+﻿package hxunit;
 
 import haxe.Log;
 
@@ -11,7 +6,7 @@ class ResultHandler {
 
 	var responders:Array<Responder>;
 	var contents:Array<Result>;
-	
+
 	public function new() {
 		contents = new Array();
 		responders = new Array();
@@ -31,5 +26,5 @@ class ResultHandler {
 			responder.execute(value);
 		}
 	}
-	
+
 }

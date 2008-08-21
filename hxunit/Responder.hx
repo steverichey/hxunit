@@ -1,11 +1,6 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
+﻿package hxunit;
 
 interface Responder {
 	public function execute(value:Result):Void;
-	
+
 }

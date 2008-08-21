@@ -1,12 +1,7 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
+﻿package hxunit;
 
 import haxe.PosInfos;
-import haxe.xunit.AssertionError;
+import hxunit.AssertionError;
 
 class TestError {
 
@@ -14,9 +9,9 @@ class TestError {
 	public var stack:String;
 	public var message:String;
 	public var posInfos:PosInfos;
-	
+
 	public var level(getLevel,null):Int;
-	
+
 	function getLevel() {
 		if (Std.is(error, AssertionError)) {
 			switch (error.cause) {
@@ -33,11 +28,11 @@ class TestError {
 	public static var WARNING:Int = 0;
 	public static var ERROR:Int = 1;
 	public static var FAILURE:Int = 2;
-	
+
 	public function new() {
-		
+
 	}
-	
+
 	public function toString() {
 		var buf = "";
 		switch(getLevel()) {
@@ -51,5 +46,5 @@ class TestError {
 		//	buf += ": " + message.toString();
 		return buf;
 	}
-	
+
 }

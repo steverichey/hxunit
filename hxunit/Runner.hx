@@ -1,29 +1,24 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
+﻿package hxunit;
 
-package haxe.xunit;
-
-import haxe.xunit.DefaultTestCase;
-import haxe.xunit.AssertionError;
-import haxe.xunit.DefaultTestSuite;
+import hxunit.DefaultTestCase;
+import hxunit.AssertionError;
+import hxunit.DefaultTestSuite;
 import haxe.Timer;
 
 import haxe.Log;
 
 class Runner {
-	
+
 	public var suites(default, null):Array<TestSuite>;
 	var defaultTestSuite:DefaultTestSuite;
 	public var resultHandler(default, null):ResultHandler;
 	public var timer:Timer;
-	
+
 	static var instance:Runner;
-	
+
 	public function new() {
 		suites = new Array();
-		
+
 		resultHandler = new ResultHandler();
 	}
 	public function addTest(scope:Dynamic,method:Void -> Void,?name:String):Void {
@@ -34,48 +29,48 @@ class Runner {
 		defaultTestSuite.addTest(scope,method,name);
 	}
 	public function addCase(value:Dynamic):Void {
-	
+
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
 			suites.push(defaultTestSuite);
 		}
-		
+
 		// Log.trace(Reflect.isFunction(defaultTestSuite.addCase));
-		
+
 		//fails
 		defaultTestSuite.addCase(value);
 	}
 	public function addSuite(value:TestSuite):Void {
 		suites.push(value);
 	}
-	
+
 	var tests:Array < Void -> Void > ;
 	var setup:Void -> Void;
 	var teardown:Void -> Void;
-	
+
 	var testIterator:Iterator<TestWrapper>;
-	
+
 	var suite:TestSuite;
 	var suiteIterator:Iterator<TestSuite>;
-	
+
 	public var status(default,null):TestStatus;
-	
+
 	public function update(value:AssertionError) {
 		var e = new TestError();
-		
+
 		e.error = value;
 		e.message = value.message;
-		
+
 		status.addError(e);
 	}
-	
-	
+
+
 	public function run(?value:Dynamic):Void {
 		Log.trace("run");
 		isRunning = true;
 		//TODO implement dynamic testing;
 		if (suites.length == 0) {
-			throw "No tests found"; 
+			throw "No tests found";
 		}else {
 			suiteIterator = suites.iterator();
 			suite = suiteIterator.next();
@@ -105,13 +100,13 @@ class Runner {
 		}
 	}
 	function runCase() {
-		
+
 		var cl = Type.getClass(suite.current.content);
-		
+
 		Log.trace("runCase: " + suite.current.name + ". Has " + suite.current.content.length + " tests");
-		
+
 		testIterator = suite.current.content.iterator();
-		
+
 		runTest(testIterator.next());
 	}
 	function onCaseEnd() {
@@ -124,22 +119,22 @@ class Runner {
 	}
 	function runTest(method:TestWrapper) {
 		Log.trace("runTest:" + method.name);
-		
+
 		status = new TestStatus();
 		status.suiteName = Type.getClassName(Type.getClass(suite));
 		status.classname = Type.getClassName(Type.getClass(suite.current.content.scope));
 		status.methodName = method.name;
-		
+
 		//TODO setup;
-		
+
 		var te = null;
-		
+
 		/*
 			Log.trace(suite.current.content.scope);
 			Log.trace(ObjectUtil.getClassNameByObject(suite.current.content.scope));
 			suite.current.content.scope.test0RunnerInit();
 		*/
-			
+
 		try {
 			//Log.trace(suite.current.content);
 			//Log.trace(suite.current.content.scope);
@@ -150,7 +145,7 @@ class Runner {
 			}else {
 				Reflect.callMethod(suite.current.content.scope, method.test,new Array());
 			}
-			
+
 		}catch (e:Dynamic) {
 			//Log.trace("error =" + e);
 			var msg = "";
@@ -159,9 +154,9 @@ class Runner {
 			}else if (Std.is(e, String)) {
 				msg = e;
 			}
-			
+
 			te = new AssertionError(Cause.error,e);
-			
+
 		}
 		status.called = true;
 		if (!status.isAsync){
@@ -175,12 +170,12 @@ class Runner {
 	}
 	public function respond(?e:Dynamic) {
 		//Log.trace("respond");
-		
+
 		if (e != null) {
 			//Log.trace("thrown error: " + e);
 			update(e);
 		}
-		
+
 		if (!status.isAsync) {
 			status.done = true;
 		}
@@ -188,7 +183,7 @@ class Runner {
 		if (!status.hasAssertation) {
 			update(new AssertionError(Cause.warning, "Test does not make assertion"));
 		}
-			
+
 		if (status.done) {
 			onTestEnd();
 		}
@@ -199,19 +194,19 @@ class Runner {
 		#else
 		if (timer != null) timer.stop();
 		#end
-		
+
 		//Log.trace(status);
-		
+
 		resultHandler.addResult(status.result);
-			
+
 		if (testIterator.hasNext()) {
 			runTest(testIterator.next());
 		}else {
 			onCaseEnd();
 		}
-		
+
 	}
-	
+
 	public var timeoutTime:Int;
 	function setTimeoutHandler(timeout:Int) {
 		#if (neko || php) error;
@@ -222,11 +217,11 @@ class Runner {
 		#end
 	}
 	function onTimeout():Void {
-		
+
 		status.done = true;
-		
+
 		update( new AssertionError(Cause.failure, "Test timed out") );
-		
+
 		respond();
 	}
 	public var isRunning(default, null):Bool;

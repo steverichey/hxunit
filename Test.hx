@@ -11,23 +11,29 @@ import test.UnitTestTest;
 import test.SyncUnitTestTests;
 
 import haxe.Log;
-class Test
-{
+class Test {
 
 	public function new() {
+#if php
+		if(!php.Lib.isCli())
+			php.Lib.print("<pre>");
+#elseif neko
+		if(neko.Web.isModNeko)
+			neko.Lib.print("<pre>");
+#end
 		Log.trace("start");
 		var r:Runner = Assert.runner;
-		
+
 		r.resultHandler.addResponder(new SimpleResponder());
-		
+
 		r.addCase( new UnitTestTest() );
 		r.addCase( new SyncUnitTestTests() );
 		//r.addCase( new RunnerTest() );
-		
+
 		r.run();
 	}
 	static var m:Test;
-	
+
 	static function main() {
 		m = new Test();
 	}

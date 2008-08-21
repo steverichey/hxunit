@@ -22,44 +22,44 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  */
-package haxe.xunit;
+package hxunit;
 
 import haxe.Stack;
-import haxe.xunit.Result;
+import hxunit.Result;
 import haxe.PosInfos;
 
 class TestStatus {
-	
+
 	public var isAsync:Bool;
 	public var called:Bool;
-	
+
 	public var hasAssertation:Bool;
 	public var time:Int;
 	public var done : Bool;
-	
+
 	public var success(isSuccess, null):Bool;
 	function isSuccess() {
 		return (errors.length == 0);
 	}
 	var errors:Array<TestError>;
-	
+
 	public function addError(value:TestError) {
 		errors.push(value);
 	}
-	
+
 	public var suiteName:String;
 	public var classname : String;
 	public var methodName : String;
-	
+
 	public function new() {
 		errors = new Array();
 		done = false;
 		called = false;
 	}
-	
-	
+
+
 	public var result(getResult, null):Result;
-	
+
 	function getResult():Result {
 		if (!done) {
 			throw "test incomplete";
@@ -68,9 +68,9 @@ class TestStatus {
 		result.suiteName = suiteName;
 		result.className = classname;
 		result.methodName = methodName;
-		
+
 		var mostSeriousError:TestError = null;
-		
+
 		if (success) {
 			result.status = Status.success;
 		}else {
@@ -81,7 +81,7 @@ class TestStatus {
 					}
 					result.addError(e);
 				}
-				
+
 				switch(mostSeriousError.level) {
 					case TestError.WARNING:
 					result.status = Status.warning;
@@ -92,11 +92,11 @@ class TestStatus {
 				}
 			}
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 	public function toString():String {
 		return " [" + suiteName + "::" + classname + "::" + methodName + "] " + ( hasAssertation == true ? "asserts" : "" ) + " " + ( isAsync ? "async" : "" ) + " " + ( done ? success ? "OK" : "FAIL" : "PENDING" ) + " " + errors;
 	}

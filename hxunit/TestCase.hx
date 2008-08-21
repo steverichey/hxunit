@@ -1,23 +1,18 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
-
-package haxe.xunit;
+﻿package hxunit;
 
 class TestCase {
 
 	public function new() {
-		
+
 	}
-	
+
 	public function setUp() {
-		
+
 	}
 	public function tearDown() {
-		
+
 	}
-	
+
 	public function assertTrue(value) {
 		Assert.True(value);
 	}

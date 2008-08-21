@@ -1,15 +1,12 @@
-﻿/**
-* ...
-* @author $(DefaultUser)
-*/
+﻿package hxunit;
 
-package haxe.xunit;
-import haxe.xunit.AssertionError;
+import hxunit.AssertionError;
 import haxe.Log;
+
 class Assert {
-	
+
 	public static var runner(getRunner, null):Runner;
-	
+
 	static function getRunner():Runner {
 		if (runner == null) {
 			runner = new Runner();
@@ -20,7 +17,7 @@ class Assert {
 		runner.update(value);
 	}
 	static var status(getStatus, null):TestStatus;
-	
+
 	static function getStatus(){
 		return runner.status;
 	}
@@ -76,7 +73,7 @@ class Assert {
 		}
 		status.time = timeout;
 		status.isAsync = true;
-		
+
 		return function():Void {
 			//Log.trace("done:" + status.done );
 			if (!status.done){
