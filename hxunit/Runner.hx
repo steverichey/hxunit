@@ -5,8 +5,6 @@ import hxunit.AssertionError;
 import hxunit.DefaultTestSuite;
 import haxe.Timer;
 
-import haxe.Log;
-
 class Runner {
 
 	public var suites(default, null):Array<TestSuite>;
@@ -21,6 +19,7 @@ class Runner {
 
 		resultHandler = new ResultHandler();
 	}
+
 	public function addTest(scope:Dynamic,method:Void -> Void,?name:String):Void {
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
@@ -28,18 +27,17 @@ class Runner {
 		}
 		defaultTestSuite.addTest(scope,method,name);
 	}
+
 	public function addCase(value:Dynamic):Void {
 
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
 			suites.push(defaultTestSuite);
 		}
-
-		// Log.trace(Reflect.isFunction(defaultTestSuite.addCase));
-
 		//fails
 		defaultTestSuite.addCase(value);
 	}
+
 	public function addSuite(value:TestSuite):Void {
 		suites.push(value);
 	}
@@ -66,7 +64,6 @@ class Runner {
 
 
 	public function run(?value:Dynamic):Void {
-		Log.trace("run");
 		isRunning = true;
 		//TODO implement dynamic testing;
 		if (suites.length == 0) {
@@ -77,21 +74,21 @@ class Runner {
 			runSuite();
 		}
 	}
+
 	function onRunnerEnd() {
-		//trace("onRunnerEnd");
 		isRunning = false;
 	}
+
 	function runSuite() {
 		if (suite.hasNext()) {
 			suite.step();
-			Log.trace("runSuite:" + Type.getClassName(Type.getClass(suite)));
 			runCase();
 		}else {
 			onSuiteEnd();
 		}
 	}
+
 	function onSuiteEnd() {
-		//Log.trace("onSuiteEnd");
 		if (suiteIterator.hasNext()) {
 			suite = suiteIterator.next();
 			runSuite();
@@ -99,26 +96,23 @@ class Runner {
 			onRunnerEnd();
 		}
 	}
+
 	function runCase() {
-
 		var cl = Type.getClass(suite.current.content);
-
-		Log.trace("runCase: " + suite.current.name + ". Has " + suite.current.content.length + " tests");
-
 		testIterator = suite.current.content.iterator();
-
 		runTest(testIterator.next());
 	}
+
 	function onCaseEnd() {
 		if (suite.hasNext()) {
 			suite.step();
 			runCase();
-		}else {
+		} else {
 			onSuiteEnd();
 		}
 	}
+
 	function runTest(method:TestWrapper) {
-		Log.trace("runTest:" + method.name);
 
 		status = new TestStatus();
 		status.suiteName = Type.getClassName(Type.getClass(suite));
@@ -129,29 +123,18 @@ class Runner {
 
 		var te = null;
 
-		/*
-			Log.trace(suite.current.content.scope);
-			Log.trace(ObjectUtil.getClassNameByObject(suite.current.content.scope));
-			suite.current.content.scope.test0RunnerInit();
-		*/
-
 		try {
-			//Log.trace(suite.current.content);
-			//Log.trace(suite.current.content.scope);
-			//Log.trace(method.name);
 			if (Std.is(method.test, String)) {
-				//Log.trace(Reflect.field(suite.current.content.scope, method.name));
 				Reflect.field(suite.current.content.scope, method.test)();
-			}else {
+			} else {
 				Reflect.callMethod(suite.current.content.scope, method.test,new Array());
 			}
 
-		}catch (e:Dynamic) {
-			//Log.trace("error =" + e);
+		} catch (e:Dynamic) {
 			var msg = "";
 			if (Reflect.field(e,"message") != null) {
 				msg = e.message;
-			}else if (Std.is(e, String)) {
+			} else if (Std.is(e, String)) {
 				msg = e;
 			}
 
@@ -161,18 +144,15 @@ class Runner {
 		status.called = true;
 		if (!status.isAsync){
 			respond(te);
-		}else if (status.done == false){
-			//Log.trace("Timeout handler set");
+		} else if (status.done == false){
 			setTimeoutHandler(status.time);
-		}else {
+		} else {
 			respond(te);
 		}
 	}
-	public function respond(?e:Dynamic) {
-		//Log.trace("respond");
 
+	public function respond(?e:Dynamic) {
 		if (e != null) {
-			//Log.trace("thrown error: " + e);
 			update(e);
 		}
 
@@ -188,20 +168,18 @@ class Runner {
 			onTestEnd();
 		}
 	}
+
 	public function onTestEnd() {
-		//Log.trace("onTestEnd");
 		#if (neko || php)
 		#else
 		if (timer != null) timer.stop();
 		#end
 
-		//Log.trace(status);
-
 		resultHandler.addResult(status.result);
 
 		if (testIterator.hasNext()) {
 			runTest(testIterator.next());
-		}else {
+		} else {
 			onCaseEnd();
 		}
 
@@ -216,13 +194,12 @@ class Runner {
 		timer.run = onTimeout;
 		#end
 	}
+
 	function onTimeout():Void {
-
 		status.done = true;
-
 		update( new AssertionError(Cause.failure, "Test timed out") );
-
 		respond();
 	}
+
 	public var isRunning(default, null):Bool;
 }

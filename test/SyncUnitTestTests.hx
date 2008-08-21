@@ -9,20 +9,19 @@ class SyncUnitTestTests extends TestCase {
 	}
 
 	public function test0SuccessSync() {
-		//Log.trace("testSyncSuccess");
 		assertTrue(true);
 	}
+
 	public function test1FailSync() {
-		//Log.trace("testAssertFail");
 		assertTrue(false);
 	}
+
 	public function test2SuccessRaiseError() {
-		//Log.trace("testSyncError");
 		assertTrue(true);
 		assertRaises(function() { throw("banana"); }, String);
 	}
-	public function test3WarnNoAssert() {
-		//Log.trace("testNoAssert");
-	}
 
+	public function test3WarnNoAssert() {
+
+	}
 }

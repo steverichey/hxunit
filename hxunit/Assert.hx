@@ -1,7 +1,6 @@
 ﻿package hxunit;
 
 import hxunit.AssertionError;
-import haxe.Log;
 
 class Assert {
 
@@ -75,7 +74,6 @@ class Assert {
 		status.isAsync = true;
 
 		return function():Void {
-			//Log.trace("done:" + status.done );
 			if (!status.done){
 				try { method(passThrough); } catch (e:Dynamic) {
 					if (Std.is(e, String)) {

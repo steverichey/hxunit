@@ -10,7 +10,6 @@ import hxunit.SimpleResponder;
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
 
-import haxe.Log;
 class Test {
 
 	public function new() {
@@ -21,7 +20,6 @@ class Test {
 		if(neko.Web.isModNeko)
 			neko.Lib.print("<pre>");
 #end
-		Log.trace("start");
 		var r:Runner = Assert.runner;
 
 		r.resultHandler.addResponder(new SimpleResponder());

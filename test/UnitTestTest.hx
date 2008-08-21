@@ -1,7 +1,6 @@
 ﻿package test;
 
 import hxunit.TestCase;
-import haxe.Log;
 import haxe.Timer;
 
 #if neko
@@ -16,45 +15,44 @@ class UnitTestTest extends TestCase{
 		blah = "one";
 		super();
 	}
-	var async:Dynamic;
+
+	var async : Void -> Void;
 	public function test4SuccessAsyncCalledInMethod() {
-		//Log.trace("testASyncSuccess");
 		async = asyncResponder(handler, 1000);
 		assertTrue(true);
 		async();
 	}
 
 	public function handler(value):Void {
-		//Log.trace("handler called");
 	}
+
 	public function test5FailAsyncTimeout() {
-		//Log.trace("testAsyncFailTimeout");
 		async = asyncResponder(handler, 1000);
 	}
 
 	public function test6AsyncFailInHandlerCalledInMethod() {
-		//Log.trace("testAsyncFailInHandler");
 		async = asyncResponder(handler2, 1000);
 		async();
 	}
 
 	function handler2(value):Void {
-		////Log.trace("handler2 called");
 		assertTrue(false);
 	}
 
 	public function test7ErrorAsyncCalledInHandlerCalledinMethod() {
-		////Log.trace("testAsyncErrorInHandler");
 		async = asyncResponder(handler3, 10000);
 		async();
 	}
+
 	function handler3(value) {
 		throw "arooga";
 	}
+
 	public function test8FailExplicitInHandlerInMethod() {
 		async = asyncResponder(handler4, 10);
 		async();
 	}
+
 	function handler4(value):Void {
 		fail("Explicit Fail in handler");
 	}
@@ -62,6 +60,7 @@ class UnitTestTest extends TestCase{
 	function handler5(value):Void {
 
 	}
+
 	public function test9FailedTimed() {
 		async = asyncResponder(handler5, 10000);
 		#if (neko || php)
@@ -70,6 +69,7 @@ class UnitTestTest extends TestCase{
 		Timer.delay(async, 100);
 		#end
 	}
+
 	public function test10FailAsyncThenTimeout() {
 		async = asyncResponder(handler6, 10000);
 		#if (neko || php)
@@ -88,14 +88,17 @@ class UnitTestTest extends TestCase{
 		Timer.delay(asyncResponder(handler6, 6000), 7000);
 		#end
 	}
+
 	public function test12SucceedValuePassThrough() {
 		async = asyncResponder(handler7, 10000, blah);
 		async();
 	}
+
 	function handler7(value) {
 		//fail();
 		assertEquals(blah,value);
 	}
+
 	public function test13FailValuePassThrough() {
 		async = asyncResponder(handler8, 10000, 2);
 		async();
@@ -105,11 +108,13 @@ class UnitTestTest extends TestCase{
 		fail("failed");
 		assertEquals(blah,value);
 	}
+
 	public function test14AssertInTestAndHandler() {
 		assertTrue(true);
 		async = asyncResponder(handler9, 1000);
 		async();
 	}
+
 	function handler9(value) {
 		assertTrue(true);
 	}

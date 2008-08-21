@@ -1,7 +1,5 @@
 ﻿package hxunit;
 
-import haxe.Log;
-
 class SimpleResponder implements Responder{
 
 	public function new() {

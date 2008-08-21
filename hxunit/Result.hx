@@ -27,22 +27,23 @@ class Result {
 	}
 
 	public function toString() {
-		var buf = "";
+		var buf = new StringBuf();
 		var suiteArray = suiteName.split(".");
-		buf += suiteArray.pop();
-		buf += " ";
+		buf.add(suiteArray.pop());
+		buf.add(" ");
 		var classArray = className.split(".");
-		buf += classArray.pop();
-		buf += ".";
-		buf += methodName;
-		buf += " ";
+		buf.add(classArray.pop());
+		buf.add(".");
+		buf.add(methodName);
+		buf.add(" ");
 
 		if (hasErrors()) {
-			buf += errors.toString();
+			for(error in errors)
+				buf.add(error.toString());
 		}else {
-			buf += "S";
+			buf.add("S");
 		}
-		return buf;
+		return buf.toString();
 	}
 
 }

@@ -1,7 +1,5 @@
 ﻿package hxunit;
 
-import haxe.Log;
-
 typedef Case = {
 	var name :String;
 	var content : TestContainer;
@@ -27,9 +25,6 @@ class TestSuite{
 		index = 0;
 	}
 	public function addCase(value:Dynamic):Void {
-		Log.trace("addCase: ");
-
-
 		var cl = Type.getClass(value);
 		var fields:Array<Dynamic> = Type.getInstanceFields(cl);
 
@@ -38,17 +33,16 @@ class TestSuite{
 		//for flash9
 		try {
 			setup = Reflect.field(value, "setup");
-		}catch (e:Dynamic){
+		} catch (e:Dynamic){
 
 		}
 		try {
 			teardown = Reflect.field(value, "teardown");
-		}catch (e:Dynamic) {
+		} catch (e:Dynamic) {
 
 		}
-		var tests:TestContainer = new TestContainer(value, setup , teardown);
-		//var tests:TestArray = new TestArray();
-		//var tests:Array<TestWrapper> = new Array();
+
+		var tests : TestContainer = new TestContainer(value, setup , teardown);
 
 		for ( val in fields ) {
 			if ( StringTools.startsWith(val, "test") && Reflect.isFunction(Reflect.field(value, val) )) {
@@ -59,9 +53,6 @@ class TestSuite{
 
 		var c:Case = { name : ObjectUtil.getClassNameByObject(value) , content : tests };
 		cases.push(c);
-
-		//Log.trace(cases.length);
-
 	}
 	public function addTest(scope:Dynamic, method:Dynamic, ?testName:String, ?setup:Void->Void,?teardown:Void->Void):Void {
 
