@@ -4,7 +4,7 @@
 */
 
 package test;
-import haxe.xunit.TestCase;
+import hxunit.TestCase;
 
 class SyncUnitTestTests extends TestCase {
 

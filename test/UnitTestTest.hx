@@ -5,7 +5,7 @@
 
 package test;
 
-import haxe.xunit.TestCase;
+import hxunit.TestCase;
 import haxe.Log;
 import haxe.Timer;
 

@@ -1,11 +1,11 @@
 ﻿package ;
 
-import haxe.xunit.Assert;
-import haxe.xunit.AssertionError;
+import hxunit.Assert;
+import hxunit.AssertionError;
 import haxe.Timer;
-import haxe.xunit.Result;
-import haxe.xunit.Runner;
-import haxe.xunit.SimpleResponder;
+import hxunit.Result;
+import hxunit.Runner;
+import hxunit.SimpleResponder;
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
@@ -13,8 +13,6 @@ import test.SyncUnitTestTests;
 import haxe.Log;
 class Test
 {
-
-	
 
 	public function new() {
 		Log.trace("start");
