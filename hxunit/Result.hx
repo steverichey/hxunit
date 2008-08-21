@@ -21,20 +21,13 @@ class Result {
 	public function addError(value:TestError) {
 		errors.push(value);
 	}
+
 	public function hasErrors() {
 		return ( errors.length > 0 );
 	}
 
 	public function toString() {
 		var buf = new StringBuf();
-		var suiteArray = suiteName.split(".");
-		buf.add(suiteArray.pop());
-		buf.add(" ");
-		var classArray = className.split(".");
-		buf.add(classArray.pop());
-		buf.add(".");
-		buf.add(methodName);
-		buf.add(" ");
 
 		if (hasErrors()) {
 			for(Error in errors)
@@ -42,6 +35,16 @@ class Result {
 		}else {
 			buf.add("S");
 		}
+
+		buf.add(" ");
+
+		var suiteArray = suiteName.split(".");
+		buf.add(suiteArray.pop());
+		buf.add(" ");
+		var classArray = className.split(".");
+		buf.add(classArray.pop());
+		buf.add(".");
+		buf.add(methodName);
 		return buf.toString();
 	}
 }

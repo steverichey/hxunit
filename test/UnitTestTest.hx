@@ -3,11 +3,6 @@
 import hxunit.TestCase;
 import haxe.Timer;
 
-#if neko
-import neko.vm.Thread;
-import neko.Sys;
-#end
-
 class UnitTestTest extends TestCase {
 	var blah:String;
 	public function new() {

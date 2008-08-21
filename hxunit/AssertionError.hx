@@ -9,13 +9,13 @@ enum Cause {
 }
 
 class AssertionError {
-	public var cause:Cause;
-	public var posInfos:PosInfos;
-	public var message:String;
+	public var cause    : Cause;
+	public var posInfos : PosInfos;
+	public var message  : String;
 
 	public function new(cause:Cause,msg:String,?p:PosInfos) {
-		this.cause = cause;
-		this.message = msg;
+		this.cause    = cause;
+		this.message  = msg;
 		this.posInfos = p;
 	}
 }
