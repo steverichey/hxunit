@@ -18,7 +18,7 @@ class Test
 
 	public function new() {
 		Log.trace("start");
-		var r:Runner = Runner.getInstance();
+		var r:Runner = Assert.runner;
 		
 		r.resultHandler.addResponder(new SimpleResponder());
 		

@@ -21,13 +21,7 @@ class Runner {
 	
 	static var instance:Runner;
 	
-	public static function getInstance():Runner {
-		if (instance == null) {
-			instance = new Runner();
-		}
-		return instance;
-	}
-	function new() {
+	public function new() {
 		suites = new Array();
 		
 		resultHandler = new ResultHandler();

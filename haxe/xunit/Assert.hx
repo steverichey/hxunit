@@ -8,13 +8,21 @@ import haxe.xunit.AssertionError;
 import haxe.Log;
 class Assert {
 	
+	public static var runner(getRunner, null):Runner;
+	
+	static function getRunner():Runner {
+		if (runner == null) {
+			runner = new Runner();
+		}
+		return runner;
+	}
 	static function update(value:AssertionError) {
-		Runner.getInstance().update(value);
+		runner.update(value);
 	}
 	static var status(getStatus, null):TestStatus;
 	
 	static function getStatus(){
-		return Runner.getInstance().status;
+		return runner.status;
 	}
 	public static function True(value:Bool):Void {
 		status.hasAssertation = true;
@@ -86,7 +94,7 @@ class Assert {
 					update(new AssertionError(Cause.warning, "Test makes no assertion"));
 				}
 				status.done = true;
-				if (status.called) { Runner.getInstance().respond(); }
+				if (status.called) { runner.respond(); }
 			}
 		}
 		#end
