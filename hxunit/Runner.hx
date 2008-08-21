@@ -6,19 +6,19 @@ import hxunit.DefaultTestSuite;
 import haxe.Timer;
 
 class Runner {
-	public var suites(default, null):Array<TestSuite>;
-	var defaultTestSuite:DefaultTestSuite;
-	public var resultHandler(default, null):ResultHandler;
-	public var timer:Timer;
+	var defaultTestSuite : DefaultTestSuite;
+	public var suites(default, null) : Array<TestSuite>;
+	public var resultHandler(default, null) : ResultHandler;
+	public var timer : Timer;
 
-	static var instance:Runner;
+	static var instance : Runner;
 
 	public function new() {
 		suites = [];
 		resultHandler = new ResultHandler();
 	}
 
-	public function addTest(scope:Dynamic,method:Void -> Void,?name:String):Void {
+	public function addTest(scope : Dynamic, method : Void->Void, ?name : String) {
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
 			suites.push(defaultTestSuite);
@@ -26,7 +26,7 @@ class Runner {
 		defaultTestSuite.addTest(scope,method,name);
 	}
 
-	public function addCase(value:Dynamic):Void {
+	public function addCase(value : Dynamic) {
 
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
@@ -36,37 +36,35 @@ class Runner {
 		defaultTestSuite.addCase(value);
 	}
 
-	public function addSuite(value:TestSuite):Void {
-		suites.push(value);
+	public function addSuite(suite : TestSuite) {
+		suites.push(suite);
 	}
 
-	var tests:Array < Void -> Void > ;
-	var setup:Void -> Void;
-	var teardown:Void -> Void;
+	var tests    : Array<Void->Void> ;
+	var setup    : Void->Void;
+	var teardown : Void->Void;
 
-	var testIterator:Iterator<TestWrapper>;
+	var testIterator : Iterator<TestWrapper>;
 
-	var suite:TestSuite;
-	var suiteIterator:Iterator<TestSuite>;
+	var suite : TestSuite;
+	var suiteIterator : Iterator<TestSuite>;
 
-	public var status(default,null):TestStatus;
+	public var status(default, null) : TestStatus;
 
-	public function update(value:AssertionError) {
+	public function update(value : AssertionError) {
 		var e = new TestError();
-
 		e.error = value;
 		e.message = value.message;
-
 		status.addError(e);
 	}
 
 
-	public function run(?value:Dynamic):Void {
+	public function run(?value : Dynamic) {
 		isRunning = true;
 		//TODO implement dynamic testing;
 		if (suites.length == 0) {
 			throw "No tests found";
-		}else {
+		} else {
 			suiteIterator = suites.iterator();
 			suite = suiteIterator.next();
 			runSuite();
@@ -81,7 +79,7 @@ class Runner {
 		if (suite.hasNext()) {
 			suite.step();
 			runCase();
-		}else {
+		} else {
 			onSuiteEnd();
 		}
 	}
@@ -90,13 +88,12 @@ class Runner {
 		if (suiteIterator.hasNext()) {
 			suite = suiteIterator.next();
 			runSuite();
-		}else {
+		} else {
 			onRunnerEnd();
 		}
 	}
 
 	function runCase() {
-		var cl = Type.getClass(suite.current.content);
 		testIterator = suite.current.content.iterator();
 		runTest(testIterator.next());
 	}
@@ -112,8 +109,8 @@ class Runner {
 
 	function runTest(method:TestWrapper) {
 		status = new TestStatus();
-		status.suiteName = Type.getClassName(Type.getClass(suite));
-		status.classname = Type.getClassName(Type.getClass(suite.current.content.scope));
+		status.suiteName  = Type.getClassName(Type.getClass(suite));
+		status.classname  = Type.getClassName(Type.getClass(suite.current.content.scope));
 		status.methodName = method.name;
 
 		//TODO setup;
@@ -126,7 +123,6 @@ class Runner {
 			} else {
 				Reflect.callMethod(suite.current.content.scope, method.test,new Array());
 			}
-
 		} catch (e:Dynamic) {
 			var msg = "";
 			if (Reflect.field(e,"message") != null) {
@@ -180,11 +176,10 @@ class Runner {
 
 	}
 
-	public var timeoutTime:Int;
-	function setTimeoutHandler(timeout:Int) {
+	public var timeoutTime : Int;
+	function setTimeoutHandler(timeout : Int) {
 		#if (neko || php) Error;
 		#else
-		var thiz = this;
 		timer = new Timer(timeout);
 		timer.run = onTimeout;
 		#end

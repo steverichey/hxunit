@@ -1,16 +1,16 @@
 ﻿import hxunit.Assert;
+import hxunit.SimpleResponder;
+
 import hxunit.AssertionError;
 import haxe.Timer;
 import hxunit.Result;
 import hxunit.Runner;
-import hxunit.SimpleResponder;
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
 
 class Test {
-
-	public function new() {
+	static function main() {
 #if php
 		if(!php.Lib.isCli())
 			php.Lib.print("<pre>");
@@ -18,7 +18,7 @@ class Test {
 		if(neko.Web.isModNeko)
 			neko.Lib.print("<pre>");
 #end
-		var r:Runner = Assert.runner;
+		var r = Assert.runner;
 
 		r.resultHandler.addResponder(new SimpleResponder());
 
@@ -27,10 +27,5 @@ class Test {
 		//r.addCase( new RunnerTest() );
 
 		r.run();
-	}
-	static var m:Test;
-
-	static function main() {
-		m = new Test();
 	}
 }

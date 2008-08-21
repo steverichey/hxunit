@@ -4,10 +4,10 @@ import haxe.PosInfos;
 import hxunit.AssertionError;
 
 class TestError {
-	public var error:Dynamic;
-	public var stack:String;
-	public var message:String;
-	public var posInfos:PosInfos;
+	public var error    : Dynamic;
+	public var stack    : String;
+	public var message  : String;
+	public var posInfos : PosInfos;
 
 	public var level(getLevel,null):Int;
 
@@ -24,6 +24,7 @@ class TestError {
 		}
 		return ERROR;
 	}
+
 	public static inline var WARNING : Int = 0;
 	public static inline var ERROR   : Int = 1;
 	public static inline var FAILURE : Int = 2;
@@ -31,16 +32,15 @@ class TestError {
 	public function new() {	}
 
 	public function toString() {
-		var buf = "";
 		switch(getLevel()) {
 			case WARNING:
-			buf += "W";
+				return "W";
 			case ERROR:
-			buf += "E";
+				return "E";
 			case FAILURE:
-			buf += "F";
+				return "F";
+			default:
+				return "E";
 		}
-		//	buf += ": " + message.toString();
-		return buf;
 	}
 }

@@ -22,19 +22,19 @@ class TestCase {
 		Assert.notNull(value);
 	}
 
-	public function assertEquals(value0, value1) {
-		Assert.equals(value0, value1);
+	public function assertEquals(expected, value) {
+		Assert.equals(expected, value);
 	}
 
-	public function assertRaises(method:Void -> Void, type:Class < Dynamic > ) {
+	public function assertRaises(method : Void->Void, type : Class<Dynamic>) {
 		Assert.raises(method, type);
 	}
 
-	public function fail(msg:String) {
+	public function fail(msg : String) {
 		Assert.fail(msg);
 	}
 
-	public function asyncResponder(method:Dynamic,?timeout:Int,?passThrough:Dynamic):Dynamic {
+	public function asyncResponder(method : Dynamic, ?timeout : Int, ?passThrough : Dynamic) : Dynamic {
 		return Assert.async(method, timeout, passThrough);
 	}
 }

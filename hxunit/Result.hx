@@ -8,11 +8,11 @@ enum Status {
 }
 
 class Result {
-	public var status:Status;
-	public var suiteName:String;
-	public var className:String;
-	public var methodName:String;
-	public var errors(default, null):Array<TestError>;
+	public var status     : Status;
+	public var suiteName  : String;
+	public var className  : String;
+	public var methodName : String;
+	public var errors(default, null) : Array<TestError>;
 
 	public function new() {
 		errors = [];
@@ -23,7 +23,7 @@ class Result {
 	}
 
 	public function hasErrors() {
-		return ( errors.length > 0 );
+		return errors.length > 0;
 	}
 
 	public function toString() {
@@ -32,12 +32,10 @@ class Result {
 		if (hasErrors()) {
 			for(Error in errors)
 				buf.add(Error.toString());
-		}else {
+		} else {
 			buf.add("S");
 		}
-
 		buf.add(" ");
-
 		var suiteArray = suiteName.split(".");
 		buf.add(suiteArray.pop());
 		buf.add(" ");

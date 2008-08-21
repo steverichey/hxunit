@@ -5,71 +5,65 @@ typedef Case = {
 	content : TestContainer
 }
 
-class TestSuite{
-	var tests:Dynamic;
-	var defaultCase:TestContainer;
-	var cases:Array<Case>;
+class TestSuite {
+	var tests       : Dynamic;
+	var defaultCase : TestContainer;
+	var cases       : Array<Case>;
 
-	public var current(default, null):Case;
-	var index:Int;
+	public var current(default, null) : Case;
+	var index : Int;
 
 	public var length(getLength, null):Int;
 
 	public function getLength():Int {
-		return Lambda.count(cases);
+		return cases.length;
 	}
 
 	public function new() {
 		unspecifiedNameCount = 0;
-		cases = new Array();
+		cases = [];
 		index = 0;
 	}
 
 	public function addCase(value:Dynamic):Void {
 		var cl = Type.getClass(value);
-		var fields:Array<Dynamic> = Type.getInstanceFields(cl);
+		var fields : Array<Dynamic> = Type.getInstanceFields(cl);
 
-		var setup:Dynamic = null;
-		var teardown:Dynamic = null;
+		var setup    : Void -> Void = null;
+		var teardown : Void -> Void = null;
 		//for flash9
 		try {
 			setup = Reflect.field(value, "setup");
-		} catch (e:Dynamic){
-
-		}
+		} catch (e:Dynamic){ }
 		try {
 			teardown = Reflect.field(value, "teardown");
-		} catch (e:Dynamic) {
+		} catch (e:Dynamic) { }
 
-		}
-
-		var tests : TestContainer = new TestContainer(value, setup , teardown);
+		var tests = new TestContainer(value, setup , teardown);
 
 		for ( val in fields ) {
 			if ( StringTools.startsWith(val, "test") && Reflect.isFunction(Reflect.field(value, val) )) {
-				var wrap:TestWrapper = new TestWrapper(Reflect.field(value, val),null,val);
+				var wrap = new TestWrapper(Reflect.field(value, val),null,val);
 				tests.add( wrap );
 			}
 		}
 
-		var c:Case = { name : Type.getClassName(Type.getClass(value)) , content : tests };
-		cases.push(c);
+		cases.push({
+			name    : Type.getClassName(Type.getClass(value)),
+			content : tests
+		});
 	}
 
-	public function addTest(scope:Dynamic, method:Dynamic, ?testName:String, ?setup:Void->Void,?teardown:Void->Void):Void {
-
+	public function addTest(scope : Dynamic, method : Dynamic, ?testName : String, ?setup : Void->Void, ?teardown : Void->Void) {
 		testName = testName == null ? getNextDefaultTestName() : testName;
-
 		if (defaultCase == null) {
-			defaultCase = new DefaultTestCase(null,setup,teardown);
-
-			var c:Case = { name : "DefaultTestCase", content : defaultCase };
-
-			cases.push(c);
+			defaultCase = new DefaultTestCase(null, setup, teardown);
+			cases.push({
+				name    : "DefaultTestCase",
+				content : defaultCase
+			});
 		}
-
 		defaultCase.add(new TestWrapper(scope, method , testName));
-
 	}
 
 	var unspecifiedNameCount:Int;
@@ -82,6 +76,7 @@ class TestSuite{
 		current = cases.pop();
 		index++;
 	}
+
 	public function hasNext() {
 		return (cases.length > 0);
 	}

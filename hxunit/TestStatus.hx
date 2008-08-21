@@ -29,26 +29,25 @@ import hxunit.Result;
 import haxe.PosInfos;
 
 class TestStatus {
+	public var isAsync : Bool;
+	public var called  : Bool;
 
-	public var isAsync:Bool;
-	public var called:Bool;
-
-	public var hasAssertation:Bool;
-	public var time:Int;
+	public var hasAssertation : Bool;
+	public var time : Int;
 	public var done : Bool;
 
 	public var success(isSuccess, null):Bool;
 	function isSuccess() {
 		return (errors.length == 0);
 	}
-	var errors:Array<TestError>;
 
+	var errors : Array<TestError>;
 	public function addError(value:TestError) {
 		errors.push(value);
 	}
 
-	public var suiteName:String;
-	public var classname : String;
+	public var suiteName  : String;
+	public var classname  : String;
 	public var methodName : String;
 
 	public function new() {
@@ -57,19 +56,15 @@ class TestStatus {
 		called = false;
 	}
 
-
 	public var result(getResult, null):Result;
-
 	function getResult():Result {
-		if (!done) {
-			throw "test incomplete";
-		}
+		if (!done) throw "test incomplete";
 		var result = new Result();
-		result.suiteName = suiteName;
-		result.className = classname;
+		result.suiteName  = suiteName;
+		result.className  = classname;
 		result.methodName = methodName;
 
-		var mostSeriousError:TestError = null;
+		var mostSeriousError : TestError = null;
 
 		if (success) {
 			result.status = Status.Success;
@@ -81,7 +76,6 @@ class TestStatus {
 					}
 					result.addError(e);
 				}
-
 				switch(mostSeriousError.level) {
 					case TestError.WARNING:
 					result.status = Status.Warning;
@@ -92,13 +86,10 @@ class TestStatus {
 				}
 			}
 		}
-
 		return result;
-
 	}
 
 	public function toString():String {
 		return " [" + suiteName + "::" + classname + "::" + methodName + "] " + ( hasAssertation == true ? "asserts" : "" ) + " " + ( isAsync ? "async" : "" ) + " " + ( done ? success ? "OK" : "FAIL" : "PENDING" ) + " " + errors;
 	}
-
 }

@@ -12,9 +12,11 @@ class Assert {
 		}
 		return runner;
 	}
+
 	static function update(value:AssertionError) {
 		runner.update(value);
 	}
+
 	static var status(getStatus, null):TestStatus;
 
 	static function getStatus(){
@@ -43,14 +45,14 @@ class Assert {
 		isTrue(Std.is(value, type), msg, pos);
 	}
 
-	public static function equals(value0 : Dynamic, value1 : Dynamic, ?msg : String , ?pos : PosInfos) {
-		if(msg == null) msg = "expected " + value0 + " but was " + value1;
-		isTrue(value0 == value1, msg, pos);
+	public static function equals(expected : Dynamic, value : Dynamic, ?msg : String , ?pos : PosInfos) {
+		if(msg == null) msg = "expected " + expected + " but was " + value;
+		isTrue(expected == value, msg, pos);
 	}
 
-	public static function floatEquals(value0 : Float, value1 : Float, ?msg : String , ?pos : PosInfos) {
-		if(msg == null) msg = "expected " + value0 + " but was " + value1;
-		isTrue(Math.abs(value1-value0) < 1e-5, msg, pos);
+	public static function floatEquals(expected : Float, value : Float, ?msg : String , ?pos : PosInfos) {
+		if(msg == null) msg = "expected " + expected + " but was " + value;
+		isTrue(Math.abs(value-expected) < 1e-5, msg, pos);
 	}
 
 	public static function raises(method:Void -> Void, type:Class<Dynamic>, ?msg : String , ?pos : PosInfos) {
