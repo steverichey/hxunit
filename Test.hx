@@ -1,6 +1,4 @@
-﻿package ;
-
-import hxunit.Assert;
+﻿import hxunit.Assert;
 import hxunit.AssertionError;
 import haxe.Timer;
 import hxunit.Result;

@@ -1,13 +1,12 @@
 ﻿package hxunit;
 
 typedef Case = {
-	var name :String;
-	var content : TestContainer;
+	name    : String,
+	content : TestContainer
 }
 
 class TestSuite{
 	var tests:Dynamic;
-
 	var defaultCase:TestContainer;
 	var cases:Array<Case>;
 
@@ -19,11 +18,13 @@ class TestSuite{
 	public function getLength():Int {
 		return Lambda.count(cases);
 	}
+	
 	public function new() {
 		unspecifiedNameCount = 0;
 		cases = new Array();
 		index = 0;
 	}
+	
 	public function addCase(value:Dynamic):Void {
 		var cl = Type.getClass(value);
 		var fields:Array<Dynamic> = Type.getInstanceFields(cl);
@@ -54,6 +55,7 @@ class TestSuite{
 		var c:Case = { name : ObjectUtil.getClassNameByObject(value) , content : tests };
 		cases.push(c);
 	}
+	
 	public function addTest(scope:Dynamic, method:Dynamic, ?testName:String, ?setup:Void->Void,?teardown:Void->Void):Void {
 
 		testName = testName == null ? getNextDefaultTestName() : testName;
@@ -69,6 +71,7 @@ class TestSuite{
 		defaultCase.add(new TestWrapper(scope, method , testName));
 
 	}
+	
 	var unspecifiedNameCount:Int;
 	function getNextDefaultTestName():String {
 		unspecifiedNameCount++;

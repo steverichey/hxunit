@@ -6,7 +6,6 @@ import hxunit.DefaultTestSuite;
 import haxe.Timer;
 
 class Runner {
-
 	public var suites(default, null):Array<TestSuite>;
 	var defaultTestSuite:DefaultTestSuite;
 	public var resultHandler(default, null):ResultHandler;
@@ -113,7 +112,6 @@ class Runner {
 	}
 
 	function runTest(method:TestWrapper) {
-
 		status = new TestStatus();
 		status.suiteName = Type.getClassName(Type.getClass(suite));
 		status.classname = Type.getClassName(Type.getClass(suite.current.content.scope));
@@ -137,9 +135,7 @@ class Runner {
 			} else if (Std.is(e, String)) {
 				msg = e;
 			}
-
-			te = new AssertionError(Cause.error,e);
-
+			te = new AssertionError(Cause.Error,e);
 		}
 		status.called = true;
 		if (!status.isAsync){
@@ -161,7 +157,7 @@ class Runner {
 		}
 
 		if (!status.hasAssertation) {
-			update(new AssertionError(Cause.warning, "Test does not make assertion"));
+			update(new AssertionError(Cause.Warning, "Test does not make assertion"));
 		}
 
 		if (status.done) {
@@ -187,7 +183,7 @@ class Runner {
 
 	public var timeoutTime:Int;
 	function setTimeoutHandler(timeout:Int) {
-		#if (neko || php) error;
+		#if (neko || php) Error;
 		#else
 		var thiz = this;
 		timer = new Timer(timeout);
@@ -197,7 +193,7 @@ class Runner {
 
 	function onTimeout():Void {
 		status.done = true;
-		update( new AssertionError(Cause.failure, "Test timed out") );
+		update( new AssertionError(Cause.Failure, "Test timed out") );
 		respond();
 	}
 

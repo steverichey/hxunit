@@ -1,14 +1,12 @@
 ﻿package hxunit;
 
 class TestContainer {
-
-
 	var contents:List<TestWrapper>;
 	public var scope(default, null):Dynamic;
 	public var setup(default, null):Void->Void;
 	public var teardown(default, null):Void->Void;
 
-	public function new(scope:Dynamic,?setup:Void->Void,?teardown:Void->Void) {
+	public function new(scope:Dynamic, ?setup:Void->Void, ?teardown:Void->Void) {
 		contents = new List();
 		this.scope = scope;
 		this.setup = setup;
@@ -27,7 +25,4 @@ class TestContainer {
 	public function iterator():Iterator<TestWrapper> {
 		return contents.iterator();
 	}
-
-
-
 }

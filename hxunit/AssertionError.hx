@@ -3,13 +3,12 @@
 import haxe.PosInfos;
 
 enum Cause {
-	warning;
-	error;
-	failure;
+	Warning;
+	Error;
+	Failure;
 }
 
 class AssertionError {
-
 	public var cause:Cause;
 	public var posInfos:PosInfos;
 	public var message:String;
@@ -19,5 +18,4 @@ class AssertionError {
 		this.message = msg;
 		this.posInfos = p;
 	}
-
 }

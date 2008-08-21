@@ -1,9 +1,5 @@
 ﻿package test;
 
 class AssertTest {
-
-	public function new() {
-
-	}
-
+	public function new() { }
 }

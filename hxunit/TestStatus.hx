@@ -53,7 +53,7 @@ class TestStatus {
 
 	public function new() {
 		errors = new Array();
-		done = false;
+		done   = false;
 		called = false;
 	}
 
@@ -72,8 +72,8 @@ class TestStatus {
 		var mostSeriousError:TestError = null;
 
 		if (success) {
-			result.status = Status.success;
-		}else {
+			result.status = Status.Success;
+		} else {
 			if (errors != null){
 				for (e in errors) {
 					if ( mostSeriousError == null || e.level > mostSeriousError.level) {
@@ -84,11 +84,11 @@ class TestStatus {
 
 				switch(mostSeriousError.level) {
 					case TestError.WARNING:
-					result.status = Status.warning;
+					result.status = Status.Warning;
 					case TestError.ERROR:
-					result.status = Status.error;
+					result.status = Status.Error;
 					case TestError.FAILURE:
-					result.status = Status.failure;
+					result.status = Status.Failure;
 				}
 			}
 		}

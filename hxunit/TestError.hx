@@ -4,7 +4,6 @@ import haxe.PosInfos;
 import hxunit.AssertionError;
 
 class TestError {
-
 	public var error:Dynamic;
 	public var stack:String;
 	public var message:String;
@@ -15,23 +14,21 @@ class TestError {
 	function getLevel() {
 		if (Std.is(error, AssertionError)) {
 			switch (error.cause) {
-				case Cause.warning:
+				case Cause.Warning:
 					return WARNING;
-				case Cause.error:
+				case Cause.Error:
 					return ERROR;
-				case Cause.failure:
+				case Cause.Failure:
 					return FAILURE;
 			}
 		}
 		return ERROR;
 	}
-	public static var WARNING:Int = 0;
-	public static var ERROR:Int = 1;
-	public static var FAILURE:Int = 2;
+	public static inline var WARNING : Int = 0;
+	public static inline var ERROR   : Int = 1;
+	public static inline var FAILURE : Int = 2;
 
-	public function new() {
-
-	}
+	public function new() {	}
 
 	public function toString() {
 		var buf = "";
@@ -46,5 +43,4 @@ class TestError {
 		//	buf += ": " + message.toString();
 		return buf;
 	}
-
 }

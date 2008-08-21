@@ -1,14 +1,13 @@
 ﻿package hxunit;
 
 enum Status {
-	success;
-	warning;
-	error;
-	failure;
+	Success;
+	Warning;
+	Error;
+	Failure;
 }
 
 class Result {
-
 	public var status:Status;
 	public var suiteName:String;
 	public var className:String;
@@ -38,12 +37,11 @@ class Result {
 		buf.add(" ");
 
 		if (hasErrors()) {
-			for(error in errors)
-				buf.add(error.toString());
+			for(Error in errors)
+				buf.add(Error.toString());
 		}else {
 			buf.add("S");
 		}
 		return buf.toString();
 	}
-
 }
