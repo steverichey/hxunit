@@ -2,4 +2,5 @@
 
 interface Responder {
 	function execute(value : Result) : Void;
+	function done() : Void;
 }

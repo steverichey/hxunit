@@ -3,7 +3,7 @@ import hxunit.AssertionError;
 import hxunit.DefaultTestCase;
 import hxunit.DefaultTestSuite;
 import hxunit.Result;
-import hxunit.ResultHandler;
+import hxunit.CompositeResponder;
 import hxunit.Runner;
 import hxunit.SimpleResponder;
 import hxunit.TestCase;

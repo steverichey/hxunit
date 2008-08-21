@@ -20,8 +20,6 @@ class Test {
 #end
 		var r = Assert.runner;
 
-		r.resultHandler.addResponder(new SimpleResponder());
-
 		r.addCase( new UnitTestTest() );
 		r.addCase( new SyncUnitTestTests() );
 		//r.addCase( new RunnerTest() );

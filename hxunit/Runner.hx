@@ -8,14 +8,14 @@ import haxe.Timer;
 class Runner {
 	var defaultTestSuite : DefaultTestSuite;
 	public var suites(default, null) : Array<TestSuite>;
-	public var resultHandler(default, null) : ResultHandler;
+	public var responder : Responder;
 	public var timer : Timer;
 
 	static var instance : Runner;
 
 	public function new() {
 		suites = [];
-		resultHandler = new ResultHandler();
+		this.responder = new SimpleResponder();
 	}
 
 	public function addTest(scope : Dynamic, method : Void->Void, ?name : String) {
@@ -73,6 +73,7 @@ class Runner {
 
 	function onRunnerEnd() {
 		isRunning = false;
+
 	}
 
 	function runSuite() {
@@ -166,7 +167,7 @@ class Runner {
 		if (timer != null) timer.stop();
 		#end
 
-		resultHandler.addResult(status.result);
+		responder.execute(status.result);
 
 		if (testIterator.hasNext()) {
 			runTest(testIterator.next());
