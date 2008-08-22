@@ -4,8 +4,14 @@ import hxunit.AssertionResult;
 import haxe.PosInfos;
 
 class StandardResponder implements Responder{
-	var suites  : Hash<Hash<Hash<MethodInfo>>>;
-	var counter : GlobalCounter;
+	var suites  : Hash<{
+		counter : Counter,
+		classes : Hash<{
+			counter : Counter,
+			methods : Hash<MethodInfo>
+		}>
+	}>;
+	var info : GlobalInfo;
 	var oldTraceFunction : Dynamic;
 	var redirectTraces : Bool;
 	public function new(redirectTraces = true) {
@@ -22,20 +28,22 @@ class StandardResponder implements Responder{
 		}
 	}
 
-	function emptyGlobalCounter() : GlobalCounter {
-		var d : Dynamic = emptyCounter();
-		d.suites  = 0;
-		d.classes = 0;
-		d.methods = 0;
-		return d;
+	function emptyGlobalCounter() : GlobalInfo {
+		return {
+			counter : emptyCounter(),
+			suites  : 0,
+			classes : 0,
+			methods : 0
+		};
 	}
 
 	function emptyMethodInfo() : MethodInfo {
-		var d : Dynamic = emptyCounter();
-		d.async    = false;
-		d.success  = false;
-		d.messages = [];
-		return d;
+		return {
+			counter  : emptyCounter(),
+			async    : false,
+			success  : false,
+			messages : []
+		};
 	}
 
 	var time : Float;
@@ -46,7 +54,7 @@ class StandardResponder implements Responder{
 			haxe.Log.trace = this.trace;
 		}
 		suites = new Hash();
-		counter = emptyGlobalCounter();
+		info = emptyGlobalCounter();
 		println("TESTING ... ");
 		println("");
 		processtime = 0.0;
@@ -56,49 +64,63 @@ class StandardResponder implements Responder{
 	public function execute(status : TestStatus) {
 		var afterexecution = haxe.Timer.stamp();
 		if(!suites.exists(status.suiteName)) {
-			suites.set(status.suiteName, new Hash());
-			counter.suites++;
+			suites.set(status.suiteName, {
+				counter : emptyCounter(),
+				classes : new Hash()
+			});
+			info.suites++;
 		}
 		var suite = suites.get(status.suiteName);
-		if(!suite.exists(status.className)) {
-			suite.set(status.className, new Hash());
-			counter.classes++;
+		if(!suite.classes.exists(status.className)) {
+			suite.classes.set(status.className, {
+				counter : emptyCounter(),
+				methods : new Hash()
+			});
+			info.classes++;
 		}
-		var cls = suite.get(status.className);
-		if(!cls.exists(status.methodName)) {
-			cls.set(status.methodName, emptyMethodInfo());
-			counter.methods++;
+		var cls = suite.classes.get(status.className);
+		if(!cls.methods.exists(status.methodName)) {
+			cls.methods.set(status.methodName, emptyMethodInfo());
+			info.methods++;
 		}
-		var method = cls.get(status.methodName);
+		var method = cls.methods.get(status.methodName);
 
-		counter.assertations += status.assertations;
+		info.counter.assertations += status.assertations;
 		method.async   = status.isAsync;
 		method.success = status.success;
 
 		for(r in status.iterator()) {
 			switch(r) {
 				case Success(_):
-					counter.sucesses++;
-					method.sucesses++;
+					suite.counter.sucesses++;
+					cls.counter.sucesses++;
+					info.counter.sucesses++;
+					method.counter.sucesses++;
 				case Warning(m):
-					counter.warnings++;
-					method.warnings++;
+					suite.counter.warnings++;
+					cls.counter.warnings++;
+					info.counter.warnings++;
+					method.counter.warnings++;
 					method.messages.push({
 						type    : "W",
 						message : m,
 						pos     : null
 					});
 				case Failure(m, p):
-					counter.failures++;
-					method.failures++;
+					suite.counter.failures++;
+					cls.counter.failures++;
+					info.counter.failures++;
+					method.counter.failures++;
 					method.messages.push({
 						type    : "F",
 						message : m,
 						pos     : p
 					});
 				case Error(m):
-					counter.errors++;
-					method.errors++;
+					suite.counter.errors++;
+					cls.counter.errors++;
+					info.counter.errors++;
+					method.counter.errors++;
 					method.messages.push({
 						type    : "E",
 						message : m,
@@ -170,46 +192,85 @@ class StandardResponder implements Responder{
 		return b.toString();
 	}
 
+	function suiteKeys() {
+		var me = this;
+		var keys : Array<String> = Lambda.array({ iterator : function() return me.suites.keys() });
+		keys.sort(function(a, b) {
+			var ao = me.suites.get(a);
+			var bo = me.suites.get(b);
+			var c = compareCounters(ao.counter, bo.counter);
+			if(c == 0)
+				return a < b ? -1 : (a > b ? 1 : 0);
+			return c;
+		});
+		return keys;
+	}
+
+	static function compareCounters(a : Counter, b : Counter) {
+		if(a.errors > b.errors) return -1;
+		if(a.errors < b.errors) return 1;
+		if(a.failures > b.failures) return -1;
+		if(a.failures < b.failures) return 1;
+		if(a.warnings > b.warnings) return -1;
+		if(a.warnings < b.warnings) return 1;
+		return 0;
+	}
+
+	static function sortedKeys(hash : Hash<Dynamic>) {
+		var keys : Array<String> = Lambda.array({ iterator : function() return hash.keys() });
+		keys.sort(function(a, b) {
+			var ao = hash.get(a);
+			var bo = hash.get(b);
+			var c = compareCounters(ao.counter, bo.counter);
+			if(c == 0)
+				return a < b ? -1 : (a > b ? 1 : 0);
+			return c;
+		});
+		return keys;
+	}
+
 	public function done() {
 		var totaltime = haxe.Timer.stamp() - time - processtime;
 
 		println("TESTS RESULT");
 		println("==========================");
-		println("suites:         " + counter.suites);
-		println("classes:        " + counter.classes);
-		println("methods:        " + counter.methods);
-		println("assertions:     " + counter.assertations);
-		println("sucesses:       " + counter.sucesses);
-		println("failures:       " + counter.failures);
-		println("errors:         " + counter.errors);
-		println("warnings:       " + counter.warnings);
-		println("execution time: " + Std.int(totaltime * 1000) / 1000 + " sec.");
+		println("suites:    " + info.suites);
+		println("classes:   " + info.classes);
+		println("methods:   " + info.methods);
+		println("asserts:   " + info.counter.assertations);
+		println("sucesses:  " + info.counter.sucesses);
+		println("failures:  " + info.counter.failures);
+		println("errors:    " + info.counter.errors);
+		println("warnings:  " + info.counter.warnings);
+		println("execution: " + Std.int(totaltime * 1000) / 1000 + " sec.");
 		println("==========================");
 		println("");
 
-		for(suitename in suites.keys()) {
+		for(suitename in sortedKeys(suites)) {
 			println(suitename);
 			var suite = suites.get(suitename);
-			for(classname in suite.keys()) {
+
+			for(classname in sortedKeys(suite.classes)) {
 				println("  " + classname);
-				var cls = suite.get(classname);
-				for(methodname in cls.keys()) {
-					var method = cls.get(methodname);
+				var cls = suite.classes.get(classname);
+
+				for(methodname in sortedKeys(cls.methods)) {
+					var method = cls.methods.get(methodname);
 					var m = null;
-					if(method.errors > 0) {
+					if(method.counter.errors > 0) {
 						m = "ERROR";
-					} else if(method.failures == 1) {
+					} else if(method.counter.failures == 1) {
 						m = "FAILURE";
-					} else if(method.failures > 0) {
-						m = "FAILURES " + method.failures;
-					} else if(method.warnings == 1) {
+					} else if(method.counter.failures > 0) {
+						m = "FAILURES " + method.counter.failures;
+					} else if(method.counter.warnings == 1) {
 						m = "WARNING";
-					} else if(method.warnings > 0) {
-						m = "WARNINGS " + method.warnings;
+					} else if(method.counter.warnings > 0) {
+						m = "WARNINGS " + method.counter.warnings;
 					} else {
-						m = "OK (asserts " + method.sucesses + ")";
+						m = "OK (asserts " + method.counter.sucesses + ")";
 					}
-					println("    " + pad(m, 20, '.') + " " + methodname);
+					println("    " + pad(m, 20, '.') + " " + methodname + (method.async ? " (async)" : ""));
 					for(msg in method.messages) {
 						println("      " + msg.type + ": " + msg.message);
 						if(msg.pos != null)
@@ -235,13 +296,15 @@ typedef Counter = {
 	failures     : Int
 }
 
-typedef GlobalCounter = {> Counter,
+typedef GlobalInfo = {
+	counter : Counter,
 	suites  : Int,
 	classes : Int,
 	methods : Int
 }
 
-typedef MethodInfo = {> Counter,
+typedef MethodInfo = {
+	counter  : Counter,
 	async    : Bool,
 	success  : Bool,
 	messages : Array<{
