@@ -27,7 +27,6 @@ class Runner {
 	}
 
 	public function addCase(value : Dynamic) {
-
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
 			suites.push(defaultTestSuite);
@@ -108,31 +107,48 @@ class Runner {
 		}
 	}
 
-	function runTest(method:TestWrapper) {
+	function runTest(method : TestWrapper) {
 		status = new TestStatus();
 		status.suiteName  = Type.getClassName(Type.getClass(suite));
 		status.className  = Type.getClassName(Type.getClass(suite.current.content.scope));
 		status.methodName = method.name;
 
-		//TODO setup;
-
 		var te = null;
 
+		var setupok = true;
 		try {
-			if (Std.is(method.test, String)) {
-				Reflect.field(suite.current.content.scope, method.test)();
-			} else {
-				Reflect.callMethod(suite.current.content.scope, method.test, []);
-			}
-		} catch (e : Dynamic) {
-			var msg = "";
-			if (Reflect.field(e,"message") != null) {
-				msg = e.message;
-			} else if (Std.is(e, String)) {
-				msg = e;
-			}
-			te = Error(e);
+			if(method.setup != null) Reflect.callMethod(suite.current.content.scope, method.setup, []);
+		} catch(e : Dynamic) {
+			setupok = false;
+			te = Error({
+				message : "setup error",
+				error   : e
+			});
 		}
+
+		if(setupok) {
+			try {
+				Reflect.callMethod(suite.current.content.scope, method.test, []);
+			} catch (e : Dynamic) {
+				var msg = "";
+				if (Reflect.field(e,"message") != null) {
+					msg = e.message;
+				} else if (Std.is(e, String)) {
+					msg = e;
+				}
+				te = Error(e);
+			}
+		}
+
+		try {
+			if(method.teardown != null) Reflect.callMethod(suite.current.content.scope, method.teardown, []);
+		} catch(e : Dynamic) {
+			te = Error({
+				message : "teardown error",
+				error   : e
+			});
+		}
+
 		status.called = true;
 		if (!status.isAsync){
 			respond(te);

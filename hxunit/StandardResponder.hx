@@ -38,6 +38,8 @@ class StandardResponder implements Responder{
 		return d;
 	}
 
+	var time : Float;
+	var processtime : Float;
 	public function start() {
 		if(redirectTraces) {
 			oldTraceFunction = haxe.Log.trace;
@@ -47,9 +49,12 @@ class StandardResponder implements Responder{
 		counter = emptyGlobalCounter();
 		println("TESTING ... ");
 		println("");
+		processtime = 0.0;
+		time = haxe.Timer.stamp();
 	}
 
 	public function execute(status : TestStatus) {
+		var afterexecution = haxe.Timer.stamp();
 		if(!suites.exists(status.suiteName)) {
 			suites.set(status.suiteName, new Hash());
 			counter.suites++;
@@ -101,6 +106,7 @@ class StandardResponder implements Responder{
 					});
 			}
 		}
+		processtime += haxe.Timer.stamp() - afterexecution;
 	}
 
 	function trace(v : Dynamic, ?p : PosInfos) {
@@ -165,16 +171,20 @@ class StandardResponder implements Responder{
 	}
 
 	public function done() {
-		println("GLOBAL INFORMATIONS");
-		println("===================");
-		println("suites:     " + counter.suites);
-		println("classes:    " + counter.classes);
-		println("methods:    " + counter.methods);
-		println("assertions: " + counter.assertations);
-		println("sucesses:   " + counter.sucesses);
-		println("failures:   " + counter.failures);
-		println("errors:     " + counter.errors);
-		println("warnings:   " + counter.warnings);
+		var totaltime = haxe.Timer.stamp() - time - processtime;
+
+		println("TESTS RESULT");
+		println("==========================");
+		println("suites:         " + counter.suites);
+		println("classes:        " + counter.classes);
+		println("methods:        " + counter.methods);
+		println("assertions:     " + counter.assertations);
+		println("sucesses:       " + counter.sucesses);
+		println("failures:       " + counter.failures);
+		println("errors:         " + counter.errors);
+		println("warnings:       " + counter.warnings);
+		println("execution time: " + Std.int(totaltime * 1000) / 1000 + " sec.");
+		println("==========================");
 		println("");
 
 		for(suitename in suites.keys()) {

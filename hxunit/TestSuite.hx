@@ -29,21 +29,17 @@ class TestSuite {
 		var cl = Type.getClass(value);
 		var fields : Array<Dynamic> = Type.getInstanceFields(cl);
 
-		var setup    : Void -> Void = null;
-		var teardown : Void -> Void = null;
-		//for flash9
-		try {
-			setup = Reflect.field(value, "setup");
-		} catch (e:Dynamic){ }
-		try {
-			teardown = Reflect.field(value, "teardown");
-		} catch (e:Dynamic) { }
+		var setup : Void -> Void = Reflect.hasField(value, "setup") ? Reflect.field(value, "setup") : null;
+		if(!Reflect.isFunction(setup)) setup = null;
+
+		var teardown : Void -> Void = Reflect.hasField(value, "teardown") ? Reflect.field(value, "teardown") : null;
+		if(!Reflect.isFunction(teardown)) teardown = null;
 
 		var tests = new TestContainer(value, setup , teardown);
 
 		for ( val in fields ) {
 			if ( StringTools.startsWith(val, "test") && Reflect.isFunction(Reflect.field(value, val) )) {
-				var wrap = new TestWrapper(Reflect.field(value, val),null,val);
+				var wrap = new TestWrapper(value, Reflect.field(value, val), val, setup, teardown);
 				tests.add( wrap );
 			}
 		}
@@ -63,7 +59,7 @@ class TestSuite {
 				content : defaultCase
 			});
 		}
-		defaultCase.add(new TestWrapper(scope, method , testName));
+		defaultCase.add(new TestWrapper(scope, method, testName, setup, teardown));
 	}
 
 	var unspecifiedNameCount:Int;
