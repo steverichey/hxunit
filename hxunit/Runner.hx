@@ -15,7 +15,7 @@ class Runner {
 
 	public function new() {
 		suites = [];
-		this.responder = new SimpleResponder();
+		this.responder = new StandardResponder();
 	}
 
 	public function addTest(scope : Dynamic, method : Void->Void, ?name : String) {
@@ -56,12 +56,14 @@ class Runner {
 	}
 
 
-	public function run(?value : Dynamic) {
+	public function run() {
 		isRunning = true;
 		//TODO implement dynamic testing;
 		if (suites.length == 0) {
 			throw "No tests found";
 		} else {
+			responder.start();
+			Assert.runner = this;
 			suiteIterator = suites.iterator();
 			suite = suiteIterator.next();
 			runSuite();
@@ -70,7 +72,8 @@ class Runner {
 
 	function onRunnerEnd() {
 		isRunning = false;
-
+		responder.done();
+		Assert.runner = null;
 	}
 
 	function runSuite() {
@@ -108,7 +111,7 @@ class Runner {
 	function runTest(method:TestWrapper) {
 		status = new TestStatus();
 		status.suiteName  = Type.getClassName(Type.getClass(suite));
-		status.classname  = Type.getClassName(Type.getClass(suite.current.content.scope));
+		status.className  = Type.getClassName(Type.getClass(suite.current.content.scope));
 		status.methodName = method.name;
 
 		//TODO setup;

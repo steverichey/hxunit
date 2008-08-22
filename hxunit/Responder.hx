@@ -1,6 +1,7 @@
 ﻿package hxunit;
 
 interface Responder {
-	function execute(value : TestStatus) : Void;
+	function execute(status : TestStatus) : Void;
+	function start() : Void;
 	function done() : Void;
 }

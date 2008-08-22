@@ -4,14 +4,7 @@ import hxunit.AssertionResult;
 import haxe.PosInfos;
 
 class Assert {
-	public static var runner(getRunner, null) : Runner;
-
-	static function getRunner() : Runner {
-		if (runner == null) {
-			runner = new Runner();
-		}
-		return runner;
-	}
+	public static var runner : Runner;
 
 	static function update(result : AssertionResult) {
 		runner.update(result);

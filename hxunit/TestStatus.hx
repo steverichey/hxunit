@@ -63,7 +63,7 @@ class TestStatus {
 	}
 
 	public var suiteName  : String;
-	public var classname  : String;
+	public var className  : String;
 	public var methodName : String;
 
 	public function new() {
@@ -86,6 +86,6 @@ class TestStatus {
 				case Success(_)    : out += 'S';
 			}
 		}
-		return out + " [" + suiteName + "::" + classname + "::" + methodName + "]" + (hasAssertation ? " assertions " + results.length : "" ) + ( isAsync ? " async" : "" ) + ( done ? " DONE" : " PENDING" );
+		return out + " [" + suiteName + "::" + className + "::" + methodName + "]" + (hasAssertation ? " assertions " + results.length : "" ) + ( isAsync ? " async" : "" ) + ( done ? " DONE" : " PENDING" );
 	}
 }

@@ -15,9 +15,15 @@ class CompositeResponder implements Responder {
 		responders.remove(value);
 	}
 
-	public function execute(value : TestStatus) {
+	public function execute(status : TestStatus) {
 		for (responder in responders) {
-			responder.execute(value);
+			responder.execute(status);
+		}
+	}
+
+	public function start() {
+		for (responder in responders) {
+			responder.start();
 		}
 	}
 

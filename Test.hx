@@ -1,4 +1,4 @@
-﻿import hxunit.Assert;
+﻿import hxunit.Runner;
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
@@ -12,7 +12,7 @@ class Test {
 		if(neko.Web.isModNeko)
 			neko.Lib.print("<pre>");
 #end
-		var r = Assert.runner;
+		var r = new Runner();
 
 		r.addCase( new UnitTestTest() );
 		r.addCase( new SyncUnitTestTests() );
