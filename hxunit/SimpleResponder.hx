@@ -3,7 +3,7 @@
 class SimpleResponder implements Responder{
 	public function new() {	}
 
-	public function execute(value : Result) {
+	public function execute(value : TestStatus) {
 		trace(value);
 	}
 

@@ -25,25 +25,32 @@
 package hxunit;
 
 import haxe.Stack;
-import hxunit.Result;
 import haxe.PosInfos;
+import hxunit.AssertionResult;
 
 class TestStatus {
 	public var isAsync : Bool;
 	public var called  : Bool;
 
-	public var hasAssertation : Bool;
+	public var hasAssertation(default, null) : Bool;
 	public var time : Int;
 	public var done : Bool;
 
 	public var success(isSuccess, null):Bool;
 	function isSuccess() {
-		return (errors.length == 0);
+		for(result in results) {
+			switch(result) {
+				case Success(_): continue;
+				default : return false;
+			}
+		}
+		return true;
 	}
 
-	var errors : Array<TestError>;
-	public function addError(value:TestError) {
-		errors.push(value);
+	var results : Array<AssertionResult>;
+	public function addResult(result : AssertionResult) {
+		results.push(result);
+		hasAssertation = true;
 	}
 
 	public var suiteName  : String;
@@ -51,45 +58,21 @@ class TestStatus {
 	public var methodName : String;
 
 	public function new() {
-		errors = new Array();
-		done   = false;
-		called = false;
-	}
-
-	public var result(getResult, null):Result;
-	function getResult():Result {
-		if (!done) throw "test incomplete";
-		var result = new Result();
-		result.suiteName  = suiteName;
-		result.className  = classname;
-		result.methodName = methodName;
-
-		var mostSeriousError : TestError = null;
-
-		if (success) {
-			result.status = Status.Success;
-		} else {
-			if (errors != null){
-				for (e in errors) {
-					if ( mostSeriousError == null || e.level > mostSeriousError.level) {
-						mostSeriousError = e;
-					}
-					result.addError(e);
-				}
-				switch(mostSeriousError.level) {
-					case TestError.WARNING:
-					result.status = Status.Warning;
-					case TestError.ERROR:
-					result.status = Status.Error;
-					case TestError.FAILURE:
-					result.status = Status.Failure;
-				}
-			}
-		}
-		return result;
+		results = [];
+		done    = false;
+		called  = false;
 	}
 
 	public function toString():String {
-		return " [" + suiteName + "::" + classname + "::" + methodName + "] " + ( hasAssertation == true ? "asserts" : "" ) + " " + ( isAsync ? "async" : "" ) + " " + ( done ? success ? "OK" : "FAIL" : "PENDING" ) + " " + errors;
+		var out = "";
+		for(result in results) {
+			switch(result) {
+				case Failure(_, _) : out += 'F';
+				case Error(_)      : out += 'E';
+				case Warning(_)    : out += 'W';
+				case Success(_)    : out += 'S';
+			}
+		}
+		return out + " [" + suiteName + "::" + classname + "::" + methodName + "]" + (hasAssertation ? " assertions " + results.length : "" ) + ( isAsync ? " async" : "" ) + ( done ? " DONE" : " PENDING" );
 	}
 }

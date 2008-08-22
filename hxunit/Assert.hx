@@ -1,20 +1,20 @@
 ﻿package hxunit;
 
-import hxunit.AssertionError;
+import hxunit.AssertionResult;
 import haxe.PosInfos;
 
 class Assert {
-	public static var runner(getRunner, null):Runner;
+	public static var runner(getRunner, null) : Runner;
 
-	static function getRunner():Runner {
+	static function getRunner() : Runner {
 		if (runner == null) {
 			runner = new Runner();
 		}
 		return runner;
 	}
 
-	static function update(value:AssertionError) {
-		runner.update(value);
+	static function update(result : AssertionResult) {
+		runner.update(result);
 	}
 
 	static var status(getStatus, null):TestStatus;
@@ -24,8 +24,10 @@ class Assert {
 	}
 
 	public static function isTrue(value : Bool, msg = "expected true but was false", ?pos : PosInfos) {
-		status.hasAssertation = true;
-		if (value == false) update(new AssertionError(Cause.Failure, msg, pos));
+		if(value)
+			update(Success(pos));
+		else
+			update(Failure(msg, pos));
 	}
 
 	public static function isFalse(value : Bool, msg = "expected false but was true", ?pos : PosInfos) {
@@ -56,11 +58,12 @@ class Assert {
 	}
 
 	public static function raises(method:Void -> Void, type:Class<Dynamic>, ?msg : String , ?pos : PosInfos) {
-		status.hasAssertation = true;
 		try { method(); } catch (ex : Dynamic) {
-			if (!Std.is(ex, type)) {
+			if (Std.is(ex, type)) {
+				update(Success(pos));
+			} else {
 				if(msg == null) msg = "expected throw of type " + type + " but was "  + ex;
-				update(new AssertionError(Cause.Failure, msg, pos));
+				update(Failure(msg, pos));
 			}
 		}
 	}
@@ -86,17 +89,10 @@ class Assert {
 		return function() {
 			if (!status.done){
 				try { method(passThrough); } catch (e:Dynamic) {
-					if (Std.is(e, String)) {
-						update(new AssertionError(Cause.Error, e));
-					}
-					else if (Reflect.hasField(e,"message")) {
-						update(new AssertionError(Cause.Error, e.message));
-					}else {
-						update(new AssertionError(Cause.Error, "test failed"));
-					}
+					update(Error(e));
 				}
 				if (status.hasAssertation == false) {
-					update(new AssertionError(Cause.Warning, "Test makes no assertion"));
+					update(Warning("Test makes no assertion"));
 				}
 				status.done = true;
 				if (status.called) { runner.respond(); }

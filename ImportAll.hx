@@ -1,14 +1,12 @@
 ﻿import hxunit.Assert;
-import hxunit.AssertionError;
+import hxunit.AssertionResult;
 import hxunit.DefaultTestCase;
 import hxunit.DefaultTestSuite;
-import hxunit.Result;
 import hxunit.CompositeResponder;
 import hxunit.Runner;
 import hxunit.SimpleResponder;
 import hxunit.TestCase;
 import hxunit.TestContainer;
-import hxunit.TestError;
 import hxunit.TestStatus;
 import hxunit.TestSuite;
 import hxunit.TestWrapper;

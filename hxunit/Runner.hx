@@ -1,7 +1,7 @@
 ﻿package hxunit;
 
 import hxunit.DefaultTestCase;
-import hxunit.AssertionError;
+import hxunit.AssertionResult;
 import hxunit.DefaultTestSuite;
 import haxe.Timer;
 
@@ -51,11 +51,8 @@ class Runner {
 
 	public var status(default, null) : TestStatus;
 
-	public function update(value : AssertionError) {
-		var e = new TestError();
-		e.error = value;
-		e.message = value.message;
-		status.addError(e);
+	public function update(result : AssertionResult) {
+		status.addResult(result);
 	}
 
 
@@ -122,16 +119,16 @@ class Runner {
 			if (Std.is(method.test, String)) {
 				Reflect.field(suite.current.content.scope, method.test)();
 			} else {
-				Reflect.callMethod(suite.current.content.scope, method.test,new Array());
+				Reflect.callMethod(suite.current.content.scope, method.test, []);
 			}
-		} catch (e:Dynamic) {
+		} catch (e : Dynamic) {
 			var msg = "";
 			if (Reflect.field(e,"message") != null) {
 				msg = e.message;
 			} else if (Std.is(e, String)) {
 				msg = e;
 			}
-			te = new AssertionError(Cause.Error,e);
+			te = Error(e);
 		}
 		status.called = true;
 		if (!status.isAsync){
@@ -153,7 +150,7 @@ class Runner {
 		}
 
 		if (!status.hasAssertation) {
-			update(new AssertionError(Cause.Warning, "Test does not make assertion"));
+			update(Warning("Test does not make assertion"));
 		}
 
 		if (status.done) {
@@ -167,7 +164,7 @@ class Runner {
 		if (timer != null) timer.stop();
 		#end
 
-		responder.execute(status.result);
+		responder.execute(status);
 
 		if (testIterator.hasNext()) {
 			runTest(testIterator.next());
@@ -188,7 +185,7 @@ class Runner {
 
 	function onTimeout():Void {
 		status.done = true;
-		update( new AssertionError(Cause.Failure, "Test timed out") );
+		update(Failure("Test timed out", null));
 		respond();
 	}
 
