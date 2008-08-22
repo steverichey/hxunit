@@ -1,9 +1,8 @@
 ﻿package test;
 
 import hxunit.TestCase;
-import hxunit.AssertionError;
 import hxunit.Assert;
-import hxunit.Result;
+import hxunit.AssertionResult;
 
 class SyncUnitTestTests extends TestCase {
 	public function test0SuccessSync() {
@@ -12,10 +11,12 @@ class SyncUnitTestTests extends TestCase {
 
 	public function test1FailSync() {
 		var status = Assert.runner.status;
-		assertTrue(status.success);
-		Assert.isTrue(false);
-		assertTrue(status.success);
-		untyped status.errors = [];
+		var statusbefore = status.success;
+		assertTrue(false);
+		var statusafter  = status.success;
+		status.reset();
+		assertTrue(statusbefore);
+		assertFalse(statusafter);
 	}
 
 	public function test2SuccessRaiseError() {
@@ -24,14 +25,14 @@ class SyncUnitTestTests extends TestCase {
 	}
 
 	public function test3WarnNoAssert() {
-		Assert.runner.update(new AssertionError(Cause.Warning, "Test does not make assertion"));
+		Assert.runner.update(Warning("Test does not make assertion"));
 		var status = Assert.runner.status;
-		status.called = true;
-		status.done = true;
-		var result = status.result;
-		assertTrue(Type.enumEq(Status.Warning, result.status));
-		untyped status.errors = [];
-		status.done = false;
-		status.called = false;
+		var count  = status.assertations;
+		var result = status.iterator().next();
+		var type   = Type.enumConstructor(result);
+
+		status.reset();
+		assertEquals(1, count);
+		assertEquals("Warning", type);
 	}
 }

@@ -1,8 +1,9 @@
 ﻿import hxunit.Assert;
 import hxunit.AssertionResult;
+import hxunit.CompositeResponder;
 import hxunit.DefaultTestCase;
 import hxunit.DefaultTestSuite;
-import hxunit.CompositeResponder;
+import hxunit.Responder;
 import hxunit.Runner;
 import hxunit.SimpleResponder;
 import hxunit.TestCase;

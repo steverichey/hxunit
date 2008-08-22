@@ -6,23 +6,23 @@ class TestCase {
 	public function setUp() { }
 	public function tearDown() { }
 
-	public function assertTrue(value) {
+	public function assertTrue(value : Bool) {
 		Assert.isTrue(value);
 	}
 
-	public function assertFalse(value) {
+	public function assertFalse(value : Bool) {
 		Assert.isFalse(value);
 	}
 
-	public function assertNull(value) {
+	public function assertNull(value : Dynamic) {
 		Assert.isNull(value);
 	}
 
-	public function assertNotNull(value) {
+	public function assertNotNull(value : Dynamic) {
 		Assert.notNull(value);
 	}
 
-	public function assertEquals(expected, value) {
+	public function assertEquals(expected : Dynamic, value : Dynamic) {
 		Assert.equals(expected, value);
 	}
 

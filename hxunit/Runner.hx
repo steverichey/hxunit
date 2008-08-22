@@ -176,7 +176,7 @@ class Runner {
 
 	public var timeoutTime : Int;
 	function setTimeoutHandler(timeout : Int) {
-		#if (neko || php) Error;
+		#if (neko || php)
 		#else
 		timer = new Timer(timeout);
 		timer.run = onTimeout;

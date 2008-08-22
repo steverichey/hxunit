@@ -1,10 +1,4 @@
 ﻿import hxunit.Assert;
-import hxunit.SimpleResponder;
-
-import hxunit.AssertionError;
-import haxe.Timer;
-import hxunit.Result;
-import hxunit.Runner;
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;

@@ -53,11 +53,24 @@ class TestStatus {
 		hasAssertation = true;
 	}
 
+	public var assertations(getAssertations, null) : Int;
+	function getAssertations() {
+		return results.length;
+	}
+
+	public function iterator() {
+		return results.iterator();
+	}
+
 	public var suiteName  : String;
 	public var classname  : String;
 	public var methodName : String;
 
 	public function new() {
+		reset();
+	}
+
+	public function reset() {
 		results = [];
 		done    = false;
 		called  = false;
