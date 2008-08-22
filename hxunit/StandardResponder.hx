@@ -6,8 +6,10 @@ import haxe.PosInfos;
 class StandardResponder implements Responder{
 	var suites  : Hash<Hash<Hash<MethodInfo>>>;
 	var counter : GlobalCounter;
-	public function new() {
-
+	var oldTraceFunction : Dynamic;
+	var redirectTraces : Bool;
+	public function new(redirectTraces = true) {
+		this.redirectTraces = redirectTraces;
 	}
 
 	function emptyCounter() : Counter {
@@ -37,6 +39,10 @@ class StandardResponder implements Responder{
 	}
 
 	public function start() {
+		if(redirectTraces) {
+			oldTraceFunction = haxe.Log.trace;
+			haxe.Log.trace = this.trace;
+		}
 		suites = new Hash();
 		counter = emptyGlobalCounter();
 		println("TESTING ... ");
@@ -95,6 +101,10 @@ class StandardResponder implements Responder{
 					});
 			}
 		}
+	}
+
+	function trace(v : Dynamic, ?p : PosInfos) {
+		println("# "+(p.className.split('.').pop())+"."+p.methodName+"("+p.lineNumber+") "+Std.string(v));
 	}
 
 #if (flash9 || flash10)
@@ -199,6 +209,10 @@ class StandardResponder implements Responder{
 				println("");
 			}
 			println("");
+		}
+
+		if(redirectTraces) {
+			haxe.Log.trace = oldTraceFunction;
 		}
 	}
 }

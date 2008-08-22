@@ -3,8 +3,8 @@
 class TestCase {
 	public function new() { }
 
-	public function setUp() { }
-	public function tearDown() { }
+	public function setup() { }
+	public function teardown() { }
 
 	public function assertTrue(value : Bool) {
 		Assert.isTrue(value);
