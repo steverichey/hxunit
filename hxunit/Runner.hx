@@ -136,27 +136,25 @@ class Runner {
 			});
 		}
 
+		var methodok = true;
+		
 		if(setupok) {
 			try {
 				Reflect.callMethod(method.scope, Reflect.field(method.scope, method.test), []);
 			} catch (e : Dynamic) {
 				te = Error(e);
+				methodok = false;
 			}
+			status.called = true;
 		}
 		
-		if (!status.isAsync){
+		if (!status.isAsync && methodok == true){
 			try {
 				if(method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
 			} catch (e : Dynamic) {
-				te = Error({
-					message : "teardown error",
-					error   : e
-				});
+				update(Error(e));
 			}
 		}
-
-		status.called = true;
-		
 		
 		if (!status.isAsync){
 			respond(te);
@@ -178,11 +176,7 @@ class Runner {
 			try {
 				if (method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
 			} catch (e : Dynamic) {
-				var te = Error({
-					message : "teardown error",
-					error   : e
-				});
-				update(te);
+				update(Error("teardown error"));
 			}
 		}
 
