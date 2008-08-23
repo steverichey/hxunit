@@ -1,14 +1,12 @@
 ﻿package hxunit;
 
-import hxunit.DefaultTestCase;
 import hxunit.AssertionResult;
-import hxunit.DefaultTestSuite;
 import hxunit.respond.StandardResponder;
 import hxunit.respond.Responder;
 import haxe.Timer;
 
 class Runner {
-	var defaultTestSuite : DefaultTestSuite;
+	var defaultTestSuite : TestSuite;
 	public var suites(default, null) : Array<TestSuite>;
 	public var responder : Responder;
 	public var timer : Timer;
@@ -22,7 +20,7 @@ class Runner {
 
 	public function addTest(scope : Dynamic, method : String, ?name : String) {
 		if (defaultTestSuite == null) {
-			defaultTestSuite = new DefaultTestSuite();
+			defaultTestSuite = new TestSuite();
 			suites.push(defaultTestSuite);
 		}
 		defaultTestSuite.addTest(scope, method, name);
@@ -30,7 +28,7 @@ class Runner {
 
 	public function addCase(value : Dynamic) {
 		if (defaultTestSuite == null) {
-			defaultTestSuite = new DefaultTestSuite();
+			defaultTestSuite = new TestSuite();
 			suites.push(defaultTestSuite);
 		}
 		//fails

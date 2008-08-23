@@ -24,7 +24,7 @@ class StandardResponder implements Responder{
 			assertations : 0,
 			warnings     : 0,
 			errors       : 0,
-			sucesses     : 0,
+			successes     : 0,
 			failures     : 0
 		}
 	}
@@ -93,10 +93,10 @@ class StandardResponder implements Responder{
 		for(r in status.iterator()) {
 			switch(r) {
 				case Success(_):
-					suite.counter.sucesses++;
-					cls.counter.sucesses++;
-					info.counter.sucesses++;
-					method.counter.sucesses++;
+					suite.counter.successes++;
+					cls.counter.successes++;
+					info.counter.successes++;
+					method.counter.successes++;
 				case Warning(m):
 					suite.counter.warnings++;
 					cls.counter.warnings++;
@@ -239,7 +239,7 @@ class StandardResponder implements Responder{
 		println("classes:   " + info.classes);
 		println("methods:   " + info.methods);
 		println("asserts:   " + info.counter.assertations);
-		println("sucesses:  " + info.counter.sucesses);
+		println("successes:  " + info.counter.successes);
 		println("failures:  " + info.counter.failures);
 		println("errors:    " + info.counter.errors);
 		println("warnings:  " + info.counter.warnings);
@@ -269,7 +269,7 @@ class StandardResponder implements Responder{
 					} else if(method.counter.warnings > 0) {
 						m = "WARNINGS " + method.counter.warnings;
 					} else {
-						m = "OK (asserts " + method.counter.sucesses + ")";
+						m = "OK (asserts " + method.counter.successes + ")";
 					}
 					println("    " + pad(m, 20, '.') + " " + methodname + (method.async ? " (async)" : ""));
 					for(msg in method.messages) {
@@ -293,7 +293,7 @@ typedef Counter = {
 	assertations : Int,
 	warnings     : Int,
 	errors       : Int,
-	sucesses     : Int,
+	successes     : Int,
 	failures     : Int
 }
 

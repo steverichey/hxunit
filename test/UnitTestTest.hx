@@ -11,20 +11,15 @@ class UnitTestTest extends TestCase {
 	}
 
 	var async : Void -> Void;
-	public function test4SuccessAsyncCalledInMethod() {
-		async = asyncResponder(handler, 1000);
-		assertTrue(true);
-		async();
-	}
-
+	
 	public function handler(value):Void {
 	}
 
-	public function test5FailAsyncTimeout() {
+	public function testFailAsyncTimeout() {
 		async = asyncResponder(handler, 1000);
 	}
 
-	public function test6AsyncFailInHandlerCalledInMethod() {
+	public function testAsyncFailInHandlerCalledInMethod() {
 		async = asyncResponder(handler2, 1000);
 		async();
 	}
@@ -33,7 +28,7 @@ class UnitTestTest extends TestCase {
 		assertTrue(false);
 	}
 
-	public function test7ErrorAsyncCalledInHandlerCalledinMethod() {
+	public function testErrorAsyncCalledInHandlerCalledinMethod() {
 		async = asyncResponder(handler3, 10000);
 		async();
 	}
@@ -42,7 +37,7 @@ class UnitTestTest extends TestCase {
 		throw "arooga";
 	}
 
-	public function test8FailExplicitInHandlerInMethod() {
+	public function testFailExplicitInHandlerInMethod() {
 		async = asyncResponder(handler4, 10);
 		async();
 	}
@@ -55,7 +50,7 @@ class UnitTestTest extends TestCase {
 
 	}
 
-	public function test9FailedTimed() {
+	public function testFailTimed() {
 		async = asyncResponder(handler5, 10000);
 		#if (neko || php)
 		//no timer here.
@@ -64,7 +59,7 @@ class UnitTestTest extends TestCase {
 		#end
 	}
 
-	public function test10FailAsyncThenTimeout() {
+	public function testFailAsyncThenTimeout() {
 		async = asyncResponder(handler6, 10000);
 		#if (neko || php)
 		#else
@@ -76,14 +71,14 @@ class UnitTestTest extends TestCase {
 		fail("Explicit Fail in Handler");
 	}
 
-	public function test11FailTimeoutThenAsync() {
+	public function testFailTimeoutThenAsync() {
 		#if (neko||php)
 		#else
 		Timer.delay(asyncResponder(handler6, 6000), 7000);
 		#end
 	}
 
-	public function test12SucceedValuePassThrough() {
+	public function testSucceedValuePassThrough() {
 		async = asyncResponder(handler7, 10000, blah);
 		async();
 	}
@@ -93,17 +88,17 @@ class UnitTestTest extends TestCase {
 		assertEquals(blah,value);
 	}
 
-	public function test13FailValuePassThrough() {
+	public function testFailValuePassThrough() {
 		async = asyncResponder(handler8, 10000, 2);
 		async();
 	}
 
 	function handler8(value) {
-		fail("failed");
+		//fail("failed");
 		assertEquals(blah,value);
 	}
 
-	public function test14AssertInTestAndHandler() {
+	public function testSucceedAssertInTestAndHandler() {
 		assertTrue(true);
 		async = asyncResponder(handler9, 1000);
 		async();

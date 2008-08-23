@@ -3,6 +3,12 @@
 
 --next
 -swf ../Test.swf
+-swf-header 1000:800:30:f3f3f3
+-main Test
+
+--next
+-swf9 ../Test9.swf
+-swf-header 1000:800:30:f3f3f3
 -main Test
 
 --next

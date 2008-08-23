@@ -49,6 +49,7 @@ class TestStatus {
 
 	var results : Array<AssertionResult>;
 	public function addResult(result : AssertionResult) {
+		//trace("addedResult: " + result != null ? result : null);
 		results.push(result);
 		hasAssertation = true;
 	}
@@ -74,11 +75,13 @@ class TestStatus {
 		results = [];
 		done    = false;
 		called  = false;
+		hasAssertation = false;
+		isAsync = false;
 	}
 
 	public function toString():String {
 		var out = "";
-		for(result in results) {
+		for (result in results) {
 			switch(result) {
 				case Failure(_, _) : out += 'F';
 				case Error(_)      : out += 'E';
@@ -86,6 +89,6 @@ class TestStatus {
 				case Success(_)    : out += 'S';
 			}
 		}
-		return out + " [" + suiteName + "::" + className + "::" + methodName + "]" + (hasAssertation ? " assertions " + results.length : "" ) + ( isAsync ? " async" : "" ) + ( done ? " DONE" : " PENDING" );
+		return out + " [" + suiteName + "::" + className + "::" + methodName + "]" + (hasAssertation ? " assertions " + results.length : "" ) + ( isAsync ? " async" : "" ) + ( done ? success ? " DONE" : " FAIL"  : " PENDING" );
 	}
 }

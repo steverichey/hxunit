@@ -1,4 +1,6 @@
-﻿import hxunit.Runner;
+﻿import hxunit.respond.SimpleResponder;
+import hxunit.Runner;
+import test.FrameworkSuite;
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
@@ -15,10 +17,12 @@ class Test {
 #end
 		var r = new Runner();
 
-//		r.addCase( new UnitTestTest() );
-		r.addCase( new SyncUnitTestTests() );
+		r.addCase( new UnitTestTest() );
+		//r.addCase( new SyncUnitTestTests() );
 		r.addCase( new AssertTest() );
-
+		//r.addSuite( new FrameworkSuite());
+		
+		//r.responder = new SimpleResponder();
 		r.run();
 	}
 }

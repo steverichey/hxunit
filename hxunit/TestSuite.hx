@@ -50,7 +50,8 @@ class TestSuite {
 	public function addTest(scope : Dynamic, method : String, ?testName : String, ?setup : String, ?teardown : String) {
 		testName = testName == null ? getNextDefaultTestName() : testName;
 		if (defaultCase == null) {
-			defaultCase = new DefaultTestCase(null, setup, teardown);
+			//TODO what did I do here?
+			//defaultCase = new TestCase(null, setup, teardown);
 			cases.push({
 				name    : "DefaultTestCase",
 				content : defaultCase

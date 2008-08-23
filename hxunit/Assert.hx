@@ -9,7 +9,7 @@ class Assert {
 	static var status(getStatus, null):TestStatus;
 
 	static function getStatus(){
-		return runner.status;
+		return ( ( runner == null) || (runner.status == null) ) ? null : runner.status;
 	}
 
 	public static function isTrue(value : Bool, msg = "expected true but was false", ?pos : PosInfos) {
@@ -62,21 +62,23 @@ class Assert {
 	}
 
 	public static function async(method:Dynamic, timeout:Int , ?passThrough:Dynamic) : Void -> Void {
-		/*
-		#if (php || neko)
-		update(new AssertionError(Cause.Failure, "async not supported in threaded platforms"));
-		return function() { };
-		#else
-		*/
+		//trace("async setup");
+		
 		if (!Reflect.isFunction(method)) {
 			throw "parameter method must be a function: Void->Void or Dynamic->Void";
 		}
 
+		
+		//trace("status = " + status);
+		
 		status.time = timeout;
 		status.isAsync = true;
 
+		
+		
 		return function() {
-			if (!status.done){
+			//trace("async called");
+			if ( ( status != null) && !status.done){
 				try { method(passThrough); } catch (e:Dynamic) {
 					runner.update(Error(e));
 				}
@@ -84,9 +86,9 @@ class Assert {
 					runner.update(Warning("Test makes no assertion"));
 				}
 				status.done = true;
+				//trace(status);
 				if (status.called) { runner.respond(); }
 			}
 		}
-//		#end
 	}
 }
