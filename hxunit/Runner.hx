@@ -3,6 +3,8 @@
 import hxunit.DefaultTestCase;
 import hxunit.AssertionResult;
 import hxunit.DefaultTestSuite;
+import hxunit.respond.StandardResponder;
+import hxunit.respond.Responder;
 import haxe.Timer;
 
 class Runner {
