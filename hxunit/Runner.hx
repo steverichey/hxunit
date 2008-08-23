@@ -6,18 +6,36 @@ import hxunit.respond.Responder;
 import haxe.Timer;
 
 class Runner {
-	var defaultTestSuite : TestSuite;
-	public var suites(default, null) : Array<TestSuite>;
-	public var responder : Responder;
-	public var timer : Timer;
-
-	static var instance : Runner;
-
+	
+	/*
+		Constructor
+	*/
 	public function new() {
 		suites = [];
 		this.responder = new StandardResponder();
 	}
-
+	
+	/*
+		Public Variables
+	*/
+	public var status(default, null) : TestStatus;
+	public var suites(default, null) : Array<TestSuite>;
+	public var responder : Responder;
+	
+	/*
+		Private Variables
+	*/
+	var defaultTestSuite : TestSuite;
+	var teardown : Void->Void;
+	var testIterator : Iterator<TestWrapper>;
+	var suite : TestSuite;
+	var suiteIterator : Iterator<TestSuite>;
+	var timer : Timer;
+	
+	
+	/*
+		Methods
+	*/
 	public function addTest(scope : Dynamic, method : String, ?name : String) {
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new TestSuite();
@@ -39,16 +57,7 @@ class Runner {
 		suites.push(suite);
 	}
 
-	var tests    : Array<Void->Void> ;
-	var setup    : Void->Void;
-	var teardown : Void->Void;
 
-	var testIterator : Iterator<TestWrapper>;
-
-	var suite : TestSuite;
-	var suiteIterator : Iterator<TestSuite>;
-
-	public var status(default, null) : TestStatus;
 
 	public function update(result : AssertionResult) {
 		status.addResult(result);
