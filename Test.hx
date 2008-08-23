@@ -2,6 +2,7 @@
 
 import test.UnitTestTest;
 import test.SyncUnitTestTests;
+import test.AssertTest;
 
 class Test {
 	static function main() {
@@ -14,9 +15,9 @@ class Test {
 #end
 		var r = new Runner();
 
-		r.addCase( new UnitTestTest() );
+//		r.addCase( new UnitTestTest() );
 		r.addCase( new SyncUnitTestTests() );
-		//r.addCase( new RunnerTest() );
+		r.addCase( new AssertTest() );
 
 		r.run();
 	}

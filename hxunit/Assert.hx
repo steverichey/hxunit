@@ -6,10 +6,6 @@ import haxe.PosInfos;
 class Assert {
 	public static var runner : Runner;
 
-	static function update(result : AssertionResult) {
-		runner.update(result);
-	}
-
 	static var status(getStatus, null):TestStatus;
 
 	static function getStatus(){
@@ -18,9 +14,9 @@ class Assert {
 
 	public static function isTrue(value : Bool, msg = "expected true but was false", ?pos : PosInfos) {
 		if(value)
-			update(Success(pos));
+			runner.update(Success(pos));
 		else
-			update(Failure(msg, pos));
+			runner.update(Failure(msg, pos));
 	}
 
 	public static function isFalse(value : Bool, msg = "expected false but was true", ?pos : PosInfos) {
@@ -53,10 +49,10 @@ class Assert {
 	public static function raises(method:Void -> Void, type:Class<Dynamic>, ?msg : String , ?pos : PosInfos) {
 		try { method(); } catch (ex : Dynamic) {
 			if (Std.is(ex, type)) {
-				update(Success(pos));
+				runner.update(Success(pos));
 			} else {
 				if(msg == null) msg = "expected throw of type " + type + " but was "  + ex;
-				update(Failure(msg, pos));
+				runner.update(Failure(msg, pos));
 			}
 		}
 	}
@@ -82,10 +78,10 @@ class Assert {
 		return function() {
 			if (!status.done){
 				try { method(passThrough); } catch (e:Dynamic) {
-					update(Error(e));
+					runner.update(Error(e));
 				}
 				if (status.hasAssertation == false) {
-					update(Warning("Test makes no assertion"));
+					runner.update(Warning("Test makes no assertion"));
 				}
 				status.done = true;
 				if (status.called) { runner.respond(); }

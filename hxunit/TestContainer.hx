@@ -3,10 +3,10 @@
 class TestContainer {
 	var contents : List<TestWrapper>;
 	public var scope(default, null)    : Dynamic;
-	public var setup(default, null)    : Void->Void;
-	public var teardown(default, null) : Void->Void;
+	public var setup(default, null)    : String;
+	public var teardown(default, null) : String;
 
-	public function new(scope : Dynamic, ?setup : Void->Void, ?teardown : Void->Void) {
+	public function new(scope : Dynamic, ?setup : String, ?teardown : String) {
 		contents = new List();
 		this.scope = scope;
 		this.setup = setup;

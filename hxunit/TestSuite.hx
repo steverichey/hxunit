@@ -25,21 +25,18 @@ class TestSuite {
 		index = 0;
 	}
 
-	public function addCase(value:Dynamic):Void {
+	public function addCase(value : Dynamic):Void {
 		var cl = Type.getClass(value);
 		var fields : Array<Dynamic> = Type.getInstanceFields(cl);
 
-		var setup : Void -> Void = Reflect.hasField(value, "setup") ? Reflect.field(value, "setup") : null;
-		if(!Reflect.isFunction(setup)) setup = null;
+		var setup    = Reflect.hasField(value, "setup")    && Reflect.isFunction(Reflect.field(value, "setup"))    ? "setup"    : null;
+		var teardown = Reflect.hasField(value, "teardown") && Reflect.isFunction(Reflect.field(value, "teardown")) ? "teardown" : null;
 
-		var teardown : Void -> Void = Reflect.hasField(value, "teardown") ? Reflect.field(value, "teardown") : null;
-		if(!Reflect.isFunction(teardown)) teardown = null;
-
-		var tests = new TestContainer(value, setup , teardown);
+		var tests = new TestContainer(value, setup, teardown);
 
 		for ( val in fields ) {
 			if ( StringTools.startsWith(val, "test") && Reflect.isFunction(Reflect.field(value, val) )) {
-				var wrap = new TestWrapper(value, Reflect.field(value, val), val, setup, teardown);
+				var wrap = new TestWrapper(value, val, val, setup, teardown);
 				tests.add( wrap );
 			}
 		}
@@ -50,7 +47,7 @@ class TestSuite {
 		});
 	}
 
-	public function addTest(scope : Dynamic, method : Dynamic, ?testName : String, ?setup : Void->Void, ?teardown : Void->Void) {
+	public function addTest(scope : Dynamic, method : String, ?testName : String, ?setup : String, ?teardown : String) {
 		testName = testName == null ? getNextDefaultTestName() : testName;
 		if (defaultCase == null) {
 			defaultCase = new DefaultTestCase(null, setup, teardown);

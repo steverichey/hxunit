@@ -1,5 +1,7 @@
 ﻿package hxunit.respond;
 
+import hxunit.TestStatus;
+
 class SimpleResponder implements Responder{
 	public function new() {	}
 

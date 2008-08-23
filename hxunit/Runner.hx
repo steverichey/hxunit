@@ -20,12 +20,12 @@ class Runner {
 		this.responder = new StandardResponder();
 	}
 
-	public function addTest(scope : Dynamic, method : Void->Void, ?name : String) {
+	public function addTest(scope : Dynamic, method : String, ?name : String) {
 		if (defaultTestSuite == null) {
 			defaultTestSuite = new DefaultTestSuite();
 			suites.push(defaultTestSuite);
 		}
-		defaultTestSuite.addTest(scope,method,name);
+		defaultTestSuite.addTest(scope, method, name);
 	}
 
 	public function addCase(value : Dynamic) {
@@ -119,7 +119,7 @@ class Runner {
 
 		var setupok = true;
 		try {
-			if(method.setup != null) Reflect.callMethod(suite.current.content.scope, method.setup, []);
+			if(method.setup != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.setup), []);
 		} catch(e : Dynamic) {
 			setupok = false;
 			te = Error({
@@ -130,20 +130,14 @@ class Runner {
 
 		if(setupok) {
 			try {
-				Reflect.callMethod(suite.current.content.scope, method.test, []);
+				Reflect.callMethod(method.scope, Reflect.field(method.scope, method.test), []);
 			} catch (e : Dynamic) {
-				var msg = "";
-				if (Reflect.field(e,"message") != null) {
-					msg = e.message;
-				} else if (Std.is(e, String)) {
-					msg = e;
-				}
 				te = Error(e);
 			}
 		}
 
 		try {
-			if(method.teardown != null) Reflect.callMethod(suite.current.content.scope, method.teardown, []);
+			if(method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
 		} catch(e : Dynamic) {
 			te = Error({
 				message : "teardown error",

@@ -1,5 +1,7 @@
 package hxunit.respond;
 
+import hxunit.TestStatus;
+
 class CompositeResponder implements Responder {
 	var responders : Array<Responder>;
 
