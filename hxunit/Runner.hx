@@ -26,7 +26,7 @@ class Runner {
 		Private Variables
 	*/
 	var defaultTestSuite : TestSuite;
-	var teardown : Void->Void;
+	var method : TestWrapper;
 	var testIterator : Iterator<TestWrapper>;
 	var suite : TestSuite;
 	var suiteIterator : Iterator<TestSuite>;
@@ -104,7 +104,8 @@ class Runner {
 
 	function runCase() {
 		testIterator = suite.current.content.iterator();
-		runTest(testIterator.next());
+		method = testIterator.next();
+		runTest();
 	}
 
 	function onCaseEnd() {
@@ -116,12 +117,12 @@ class Runner {
 		}
 	}
 
-	function runTest(method : TestWrapper) {
+	function runTest() {
 		status = new TestStatus();
 		status.suiteName  = Type.getClassName(Type.getClass(suite));
 		status.className  = Type.getClassName(Type.getClass(suite.current.content.scope));
 		status.methodName = method.name;
-
+		
 		var te = null;
 
 		var setupok = true;
@@ -142,17 +143,21 @@ class Runner {
 				te = Error(e);
 			}
 		}
-
-		try {
-			if(method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
-		} catch(e : Dynamic) {
-			te = Error({
-				message : "teardown error",
-				error   : e
-			});
+		
+		if (!status.isAsync){
+			try {
+				if(method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
+			} catch (e : Dynamic) {
+				te = Error({
+					message : "teardown error",
+					error   : e
+				});
+			}
 		}
 
 		status.called = true;
+		
+		
 		if (!status.isAsync){
 			respond(te);
 		} else if (status.done == false){
@@ -169,6 +174,16 @@ class Runner {
 
 		if (!status.isAsync) {
 			status.done = true;
+		}else {
+			try {
+				if (method.teardown != null) Reflect.callMethod(method.scope, Reflect.field(method.scope, method.teardown), []);
+			} catch (e : Dynamic) {
+				var te = Error({
+					message : "teardown error",
+					error   : e
+				});
+				update(te);
+			}
 		}
 
 		if (!status.hasAssertation) {
@@ -189,7 +204,8 @@ class Runner {
 		responder.execute(status);
 
 		if (testIterator.hasNext()) {
-			runTest(testIterator.next());
+			method = testIterator.next();
+			runTest();
 		} else {
 			onCaseEnd();
 		}
