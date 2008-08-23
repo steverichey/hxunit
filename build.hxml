@@ -1,0 +1,16 @@
+-neko ../Test.n
+-main Test
+
+--next
+-swf ../Test.swf
+-main Test
+
+--next
+-debug
+-js ../Test.js
+-main Test
+
+--next
+-debug
+-php ../Test
+-main Test	
