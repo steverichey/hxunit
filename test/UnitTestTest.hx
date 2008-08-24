@@ -9,17 +9,32 @@ class UnitTestTest extends TestCase {
 		blah = "one";
 		super();
 	}
-
+	//placeholder for asynchronous handler.
 	var async : Void -> Void;
-	
-	public function handler(value):Void {
-	}
 
-	public function testFailAsyncTimeout() {
+	
+	//the asynchronous handler is setup but never called
+	//FAIL: TIMEOUT
+	public function testTimeout() {
 		async = asyncResponder(handler, 1000);
 	}
-
-	public function testAsyncFailInHandlerCalledInMethod() {
+	public function handler(value):Void {
+	}
+	
+	//No assertions made, either in the method, or handler
+	//???? Platform dependent, I think.
+	public function testHandlerCalledWithNoAssertions() {
+		async = asyncResponder(function(){}, 10000);
+		#if (neko || php)
+		//no timer here.
+		#else
+		Timer.delay(async, 100);
+		#end
+	}
+	
+	//no assertion in method, and a failed assertion in handler2
+	//FAIL: ASSERTION FAILED
+	public function testAssertionFailinHandler() {
 		async = asyncResponder(handler2, 1000);
 		async();
 	}
@@ -28,7 +43,9 @@ class UnitTestTest extends TestCase {
 		assertTrue(false);
 	}
 
-	public function testErrorAsyncCalledInHandlerCalledinMethod() {
+	//asnchronous called synchronously, error thrown in handler3
+	// ERROR: "arooga"
+	public function testErrorThrownInHandler() {
 		async = asyncResponder(handler3, 10000);
 		async();
 	}
@@ -37,12 +54,24 @@ class UnitTestTest extends TestCase {
 		throw "arooga";
 	}
 
-	public function testFailExplicitInHandlerInMethod() {
-		async = asyncResponder(handler4, 10);
+	//asynchronous called synchronously, fail() called in failHandler
+	// FAIL: "Explicit Fail In Handler"
+	public function testFailinHandler() {
+		async = asyncResponder(failHandler, 10);
 		async();
 	}
-
-	function handler4(value):Void {
+	
+	//asynchronous called after delay, fail() called in failHandler()
+	// FAIL: "Explicit Fail in Handler"
+	public function testHandlerFailsExplicitlyAfterDelay() {
+		async = asyncResponder(failHandler, 10000);
+		#if (neko || php)
+		async();
+		#else
+		Timer.delay(async, 5000);
+		#end
+	}
+	function failHandler(value):Void {
 		fail("Explicit Fail in handler");
 	}
 
@@ -50,55 +79,29 @@ class UnitTestTest extends TestCase {
 
 	}
 
-	public function testFailTimed() {
-		async = asyncResponder(handler5, 10000);
-		#if (neko || php)
-		//no timer here.
-		#else
-		Timer.delay(async, 100);
-		#end
-	}
-
-	public function testFailAsyncThenTimeout() {
-		async = asyncResponder(handler6, 10000);
-		#if (neko || php)
-		#else
-		Timer.delay(async, 5000);
-		#end
-	}
-
-	function handler6(value):Void {
-		fail("Explicit Fail in Handler");
-	}
-
-	public function testFailTimeoutThenAsync() {
+	//Does anything unexpected happen if the handler is called after the test has timed out?
+	// TIMEOUT
+	public function testTimeoutThenHandler() {
 		#if (neko||php)
 		#else
-		Timer.delay(asyncResponder(handler6, 6000), 7000);
+		Timer.delay(asyncResponder(function() { trace("putting a spanner in the works");} , 6000), 7000);
 		#end
 	}
 
-	public function testSucceedValuePassThrough() {
+	//passing a variable from the method to the handler
+	// SUCCESS
+	public function testValuePassedToHandler() {
 		async = asyncResponder(handler7, 10000, blah);
 		async();
 	}
 
 	function handler7(value) {
-		//fail();
 		assertEquals(blah,value);
 	}
 
-	public function testFailValuePassThrough() {
-		async = asyncResponder(handler8, 10000, 2);
-		async();
-	}
-
-	function handler8(value) {
-		//fail("failed");
-		assertEquals(blah,value);
-	}
-
-	public function testSucceedAssertInTestAndHandler() {
+	//Testing successful assertions in both method and handler9
+	// SUCCESS
+	public function testAssertInBothMethodAndHandler() {
 		assertTrue(true);
 		async = asyncResponder(handler9, 1000);
 		async();
