@@ -1,0 +1,14 @@
+{
+  "name": "hxunit",
+  "url" :
+      "https://github.com/steverichey/hxunit",
+  "license": "MIT",
+  "tags": ["unit", "testing"],
+  "description":
+      "hxunit is a standard way of doing asynchronous unit tests in haxe.",
+  "version": "0.0.1",
+  "releasenote":
+      "Initial release fork to github",
+  "contributors": ["Steve Richey"],
+  "dependencies": {  }
+}
