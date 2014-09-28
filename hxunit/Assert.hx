@@ -6,9 +6,9 @@ import haxe.PosInfos;
 class Assert {
 	public static var runner : Runner;
 
-	static var status(getStatus, null):TestStatus;
+	static var status(get, null):TestStatus;
 
-	static function getStatus(){
+	static function get_status(){
 		return ( ( runner == null) || (runner.status == null) ) ? null : runner.status;
 	}
 

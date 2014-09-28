@@ -4,17 +4,13 @@ import hxunit.AssertionResult;
 import haxe.PosInfos;
 import hxunit.TestStatus;
 
-class StandardResponder implements Responder{
-	var suites  : Hash<{
-		counter : Counter,
-		classes : Hash<{
-			counter : Counter,
-			methods : Hash<MethodInfo>
-		}>
-	}>;
+class StandardResponder implements Responder
+{
+	var suites:Map<String, {counter:Counter, classes:Map<String, {counter:Counter, methods:Map<String,MethodInfo>}>}>;
 	var info : GlobalInfo;
 	var oldTraceFunction : Dynamic;
 	var redirectTraces : Bool;
+	
 	public function new(redirectTraces = true) {
 		this.redirectTraces = redirectTraces;
 	}
@@ -54,7 +50,7 @@ class StandardResponder implements Responder{
 			oldTraceFunction = haxe.Log.trace;
 			haxe.Log.trace = this.trace;
 		}
-		suites = new Hash();
+		suites = new Map();
 		info = emptyGlobalCounter();
 		println("TESTING ... ");
 		println("");
@@ -67,7 +63,7 @@ class StandardResponder implements Responder{
 		if(!suites.exists(status.suiteName)) {
 			suites.set(status.suiteName, {
 				counter : emptyCounter(),
-				classes : new Hash()
+				classes : new Map()
 			});
 			info.suites++;
 		}
@@ -75,7 +71,7 @@ class StandardResponder implements Responder{
 		if(!suite.classes.exists(status.className)) {
 			suite.classes.set(status.className, {
 				counter : emptyCounter(),
-				methods : new Hash()
+				methods : new Map()
 			});
 			info.classes++;
 		}
@@ -217,7 +213,7 @@ class StandardResponder implements Responder{
 		return 0;
 	}
 
-	static function sortedKeys(hash : Hash<Dynamic>) {
+	static function sortedKeys(hash : Map<String, Dynamic>) {
 		var keys : Array<String> = Lambda.array({ iterator : function() return hash.keys() });
 		keys.sort(function(a, b) {
 			var ao = hash.get(a);

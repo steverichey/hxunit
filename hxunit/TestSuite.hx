@@ -13,9 +13,9 @@ class TestSuite {
 	public var current(default, null) : Case;
 	var index : Int;
 
-	public var length(getLength, null):Int;
+	public var length(get, null):Int;
 
-	public function getLength():Int {
+	public function get_length():Int {
 		return cases.length;
 	}
 

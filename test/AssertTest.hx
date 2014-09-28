@@ -37,8 +37,8 @@ class AssertTest {
 	}
 
 	public function testIsNull() {
-		var tests    = [null, "string", 0.1,   0,     0.0,   -1,    this ];
-		var expected = [true, false,    false, false, false, false, false];
+		var tests:Array<Dynamic>    = [null, "string", 0.1,   0,     0.0,   -1,    this ];
+		var expected:Array<Bool>  = [true, false,    false, false, false, false, false];
 
 		swap();
 		for(t in tests)
@@ -50,7 +50,7 @@ class AssertTest {
 	}
 
 	public function testNotNull() {
-		var tests    = [null,  "string", 0.1,  0,    0.0,  -1,   this];
+		var tests:Array<Dynamic>    = [null,  "string", 0.1,  0,    0.0,  -1,   this];
 		var expected = [false, true,     true, true, true, true, true];
 
 		swap();
@@ -63,8 +63,8 @@ class AssertTest {
 	}
 
 	public function testIs() {
-		var tests    = ["string", 0.1,   1,    "string", 0.1,    0,    ];
-		var params   = [String,   Float, Int,  Int,      String, String];
+		var tests:Array<Dynamic>    = ["string", 0.1,   1,    "string", 0.1,    0,    ];
+		var params:Array<Dynamic>   = [String,   Float, Int,  Int,      String, String];
 		var expected = [true,     true,  true, false,    false,  false ];
 
 		swap();
@@ -77,8 +77,8 @@ class AssertTest {
 	}
 
 	public function testEquals() {
-		var tests    = ["string", "a",   1,    1,     0.1,  0.1,   null, null,  1   ];
-		var params   = ["string", "b",   1,    0,     0.1,  0.0,   null, 1,     1.0 ];
+		var tests:Array<Dynamic>    = ["string", "a",   1,    1,     0.1,  0.1,   null, null,  1   ];
+		var params:Array<Dynamic>   = ["string", "b",   1,    0,     0.1,  0.0,   null, 1,     1.0 ];
 		var expected = [true,     false, true, false, true, false, true, false, true];
 
 		swap();
@@ -108,7 +108,7 @@ class AssertTest {
 		var fs = function() throw "a";
 		var fi = function() throw 1;
 		var tests    = [fs,      fi,      fs,     fi,   fs,    fi];
-		var params   = [Dynamic, Dynamic, String, Int,  Int,   String];
+		var params:Array<Dynamic>   = [Dynamic, Dynamic, String, Int,  Int,   String];
 		var expected = [true,    true,    true,   true, false, false ];
 
 		swap();

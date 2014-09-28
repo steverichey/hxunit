@@ -17,8 +17,8 @@ class TestContainer {
 		contents.push(value);
 	}
 
-	public var length(getLength, null) : Int;
-	function getLength() {
+	public var length(get, null) : Int;
+	function get_length() {
 		return contents.length;
 	}
 

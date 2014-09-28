@@ -24,7 +24,7 @@
  */
 package hxunit;
 
-import haxe.Stack;
+import haxe.CallStack;
 import haxe.PosInfos;
 import hxunit.AssertionResult;
 
@@ -36,8 +36,9 @@ class TestStatus {
 	public var time : Int;
 	public var done : Bool;
 
-	public var success(isSuccess, null):Bool;
-	function isSuccess() {
+	public var success(get, null):Bool;
+	
+	function get_success() {
 		for(result in results) {
 			switch(result) {
 				case Success(_): continue;
@@ -54,8 +55,10 @@ class TestStatus {
 		hasAssertation = true;
 	}
 
-	public var assertations(getAssertations, null) : Int;
-	function getAssertations() {
+	public var assertations(get, null) : Int;
+	
+	function get_assertations()
+	{
 		return results.length;
 	}
 
